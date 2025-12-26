@@ -72,7 +72,7 @@ server {
     listen 80;
     server_name seudominio.com www.seudominio.com;
     location / {
-        proxy_pass http://localhost:5173;
+        proxy_pass http://localhost:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -102,7 +102,7 @@ pm2 status
 pm2 logs brisa-azul
 
 # Testar localmente
-curl http://localhost:5173
+curl http://localhost:3001
 ```
 
 ---
@@ -121,7 +121,7 @@ pm2 restart brisa-azul
 
 ## 📝 Notas
 
-- **Porta padrão**: 5173 (Vite)
+- **Porta padrão**: 3001
 - **Domínio**: Substitua `seudominio.com` pelo seu domínio real
 - **Caminho**: O PM2 vai usar o diretório atual automaticamente
 - **Logs**: `pm2 logs brisa-azul` para ver os logs

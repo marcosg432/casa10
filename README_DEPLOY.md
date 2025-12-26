@@ -98,7 +98,7 @@ pm2 monit
 ## ⚠️ Importante
 
 - Substitua `seudominio.com` pelo seu domínio real na configuração do Nginx
-- A aplicação roda na porta **5173** por padrão
+- A aplicação roda na porta **3001** por padrão (pode ser alterada para 3005)
 - Certifique-se de que as portas 80 (HTTP) e 443 (HTTPS) estão abertas no firewall
 
 ## 🆘 Problemas?

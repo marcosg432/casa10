@@ -169,7 +169,7 @@ server {
     # return 301 https://$server_name$request_uri;
 
     location / {
-        proxy_pass http://localhost:5173;
+        proxy_pass http://localhost:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -239,7 +239,7 @@ pm2 monit
 ### 10.2 Verificar se está funcionando
 ```bash
 # Verificar se a aplicação está rodando na porta correta
-curl http://localhost:5173
+curl http://localhost:3001
 
 # Verificar logs do Nginx
 sudo tail -f /var/log/nginx/error.log
@@ -278,7 +278,7 @@ pm2 restart brisa-azul
 pm2 logs brisa-azul --lines 50
 
 # Verificar se a porta está em uso
-sudo netstat -tulpn | grep 5173
+sudo netstat -tulpn | grep 3001
 ```
 
 ### Problema: Nginx não redireciona
@@ -293,7 +293,7 @@ sudo tail -f /var/log/nginx/error.log
 ### Problema: Porta já em uso
 ```bash
 # Verificar processos na porta
-sudo lsof -i :5173
+sudo lsof -i :3001
 
 # Matar processo (substitua PID pelo número do processo)
 kill -9 PID
@@ -310,7 +310,7 @@ chmod -R 755 ~/casa10
 
 ## 📝 Notas Importantes
 
-1. **Porta da Aplicação**: O projeto usa a porta `5173` por padrão (Vite). Verifique no `vite.config.js` se está configurada outra porta.
+1. **Porta da Aplicação**: O projeto usa a porta `3001` por padrão. Verifique no `vite.config.js` se está configurada outra porta.
 
 2. **Variáveis de Ambiente**: Se o projeto usar variáveis de ambiente, crie um arquivo `.env` na raiz do projeto.
 

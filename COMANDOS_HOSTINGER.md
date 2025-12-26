@@ -107,7 +107,7 @@ pm2 status
 pm2 logs brisa-azul
 
 # Testar se está respondendo
-curl http://localhost:5173
+curl http://localhost:3001
 ```
 
 ---
@@ -130,7 +130,7 @@ server {
     server_name seudominio.com www.seudominio.com;
 
     location / {
-        proxy_pass http://localhost:5173;
+        proxy_pass http://localhost:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -202,7 +202,7 @@ chmod +x deploy.sh
 
 1. **Substitua `seudominio.com`** pelo seu domínio real na configuração do Nginx
 2. **Altere o caminho** no `ecosystem.config.cjs` para o caminho real do seu projeto
-3. **Verifique a porta** - o projeto usa porta 5173 por padrão
+3. **Verifique a porta** - o projeto usa porta 3001 por padrão
 4. Se a porta for diferente, ajuste no Nginx e no ecosystem.config.cjs
 
 ---
