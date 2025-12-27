@@ -49,3 +49,5 @@ echo "3. Execute: npm install && npm run build"
 echo "4. Inicie com PM2: pm2 start ecosystem.config.cjs"
 echo "5. Configure o Nginx seguindo o GUIA_RAPIDO.md"
 
+
+
