@@ -274,6 +274,20 @@ export const getUsuarioByEmail = async (email) => {
   return await db.usuarios.get(emailSanitizado)
 }
 
+// Lista todos os usuários admin (exceto 'current')
+export const getAllUsuarios = async () => {
+  const todosUsuarios = await db.usuarios.toArray()
+  // Filtra apenas usuários admin (não inclui 'current' que é a sessão)
+  return todosUsuarios.filter(u => u.id !== 'current' && u.role === 'admin')
+}
+
+// Deleta um usuário admin
+export const deleteUsuario = async (email) => {
+  const emailSanitizado = sanitizeEmail(email)
+  if (!emailSanitizado) return
+  await db.usuarios.delete(emailSanitizado)
+}
+
 // ========== CARRINHO ==========
 export const getCarrinho = async () => {
   const carrinho = await db.carrinho.get('current')
