@@ -192,6 +192,7 @@ export const authenticateUser = async (email, senha) => {
   
   // Cria sessão PRIMEIRO
   const session = createSession(usuario.id)
+  console.log('✅ Sessão criada')
   
   // Salva usuário logado (sem senha)
   const { senha: _, ...usuarioSemSenha } = usuario
@@ -199,14 +200,15 @@ export const authenticateUser = async (email, senha) => {
   // Salva como 'current' para sessão atual - FORÇA múltiplas vezes para garantir
   const usuarioCurrent = { id: 'current', ...usuarioSemSenha }
   
+  console.log('🔵 Salvando usuário no banco...')
   await db.usuarios.put(usuarioCurrent)
-  await new Promise(resolve => setTimeout(resolve, 100))
+  await new Promise(resolve => setTimeout(resolve, 200))
   await db.usuarios.put(usuarioCurrent)
-  await new Promise(resolve => setTimeout(resolve, 100))
+  await new Promise(resolve => setTimeout(resolve, 200))
   await db.usuarios.put(usuarioCurrent)
+  await new Promise(resolve => setTimeout(resolve, 200))
   
-  // Não verifica imediatamente pois IndexedDB pode ter delays
-  // O ProtectedRoute vai verificar quando necessário
+  console.log('✅ Usuário salvo no banco')
   
   return { usuario: usuarioSemSenha, session }
 }

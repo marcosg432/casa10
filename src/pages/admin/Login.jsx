@@ -54,15 +54,31 @@ const Login = () => {
         return
       }
 
+      // Garante que o usuário admin existe antes de autenticar
+      console.log('🔵 Garantindo que usuário admin existe...')
+      await createAdminUserInDB()
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
       // Autentica usuário
+      console.log('🔵 Autenticando usuário...')
       await authenticateUser(emailSanitizado, formData.senha)
       recordLoginAttempt(emailSanitizado, true)
+      console.log('✅ Autenticação bem-sucedida!')
       
       // Aguarda para garantir que tudo foi salvo no IndexedDB
-      await new Promise(resolve => setTimeout(resolve, 800))
+      await new Promise(resolve => setTimeout(resolve, 1000))
       
-      // Força reload completo da página para garantir que o ProtectedRoute veja a autenticação
-      window.location.href = '/admin'
+      // Verifica se foi salvo antes de redirecionar
+      const db = (await import('../../utils/db.js')).default
+      const usuarioSalvo = await db.usuarios.get('current')
+      console.log('🔵 Usuário salvo?', usuarioSalvo ? 'SIM' : 'NÃO')
+      
+      if (usuarioSalvo) {
+        console.log('✅ Redirecionando para /admin...')
+        window.location.href = '/admin'
+      } else {
+        throw new Error('Usuário não foi salvo corretamente. Tente novamente.')
+      }
     } catch (err) {
       recordLoginAttempt(formData.email, false)
       setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.')
