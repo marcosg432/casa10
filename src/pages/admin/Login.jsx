@@ -58,11 +58,11 @@ const Login = () => {
       await authenticateUser(emailSanitizado, formData.senha)
       recordLoginAttempt(emailSanitizado, true)
       
-      // Aguarda para garantir que tudo foi salvo
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Aguarda para garantir que tudo foi salvo no IndexedDB
+      await new Promise(resolve => setTimeout(resolve, 800))
       
-      // Redireciona usando navigate do React Router
-      navigate('/admin', { replace: true })
+      // Força reload completo da página para garantir que o ProtectedRoute veja a autenticação
+      window.location.href = '/admin'
     } catch (err) {
       recordLoginAttempt(formData.email, false)
       setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.')
