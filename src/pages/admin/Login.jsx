@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { setUsuarioLogado } from '../../utils/storage'
+import { authenticateUser, createAdminUser } from '../../utils/storage'
+import { sanitizeEmail, sanitizeString, validateEmail, validatePassword, checkLoginAttempts, recordLoginAttempt, generateCSRFToken } from '../../utils/security'
 import PixelCursorTrail from '../../components/PixelCursorTrail'
 import './Login.css'
 
@@ -8,43 +9,103 @@ const Login = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     nome: '',
-    email: ''
+    email: '',
+    senha: ''
   })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [csrfToken] = useState(() => generateCSRFToken())
 
-  const handleSubmit = (e) => {
+  // Cria usuário admin padrão na primeira execução
+  useEffect(() => {
+    const initializeAdmin = async () => {
+      try {
+        const { getUsuarioByEmail } = await import('../../utils/storage')
+        // Verifica se já existe um admin
+        const adminExists = await getUsuarioByEmail('admin@casa10.com')
+        if (!adminExists) {
+          // Cria admin padrão: admin@casa10.com / admin123
+          await createAdminUser('Administrador', 'admin@casa10.com', 'admin123')
+          console.log('Usuário admin padrão criado: admin@casa10.com / admin123')
+        }
+      } catch (err) {
+        console.error('Erro ao inicializar admin:', err)
+      }
+    }
+    initializeAdmin()
+  }, [])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setUsuarioLogado(formData)
-    navigate('/admin')
+    setError('')
+    setLoading(true)
+
+    try {
+      // Validações
+      const emailSanitizado = sanitizeEmail(formData.email)
+      if (!emailSanitizado || !validateEmail(emailSanitizado)) {
+        throw new Error('Email inválido')
+      }
+
+      if (!validatePassword(formData.senha)) {
+        throw new Error('Senha deve ter pelo menos 6 caracteres')
+      }
+
+      // Verifica tentativas de login
+      const attemptCheck = checkLoginAttempts(emailSanitizado)
+      if (!attemptCheck.allowed) {
+        setError(attemptCheck.message)
+        setLoading(false)
+        return
+      }
+
+      // Autentica usuário
+      await authenticateUser(emailSanitizado, formData.senha)
+      recordLoginAttempt(emailSanitizado, true)
+      
+      // Redireciona para admin
+      navigate('/admin')
+    } catch (err) {
+      recordLoginAttempt(formData.email, false)
+      setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     })
+    // Limpa erro quando usuário começa a digitar
+    if (error) setError('')
   }
 
   return (
     <div className="login-page">
       <PixelCursorTrail />
       <div className="login-logo-corner">
-        <img src="/icones/logo boa.png" className="login-logo-corner-icon" alt="Brisa Azul Logo" />
+        <img src="/icones/logo boa.png" className="login-logo-corner-icon" alt="Casa10 Logo" />
       </div>
       <div className="login-container">
         <div className="login-logo">
           <div className="login-logo-icon"></div>
         </div>
         <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-form-group">
-            <label>Nome</label>
-            <input
-              type="text"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {error && (
+            <div className="login-error" style={{
+              backgroundColor: '#fee',
+              color: '#c33',
+              padding: '12px',
+              borderRadius: '4px',
+              marginBottom: '16px',
+              border: '1px solid #fcc'
+            }}>
+              {error}
+            </div>
+          )}
           <div className="login-form-group">
             <label>E-mail</label>
             <input
@@ -53,13 +114,29 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              autoComplete="email"
+              disabled={loading}
+            />
+          </div>
+          <div className="login-form-group">
+            <label>Senha</label>
+            <input
+              type="password"
+              name="senha"
+              value={formData.senha}
+              onChange={handleChange}
+              required
+              autoComplete="current-password"
+              disabled={loading}
+              minLength={6}
             />
           </div>
           <div className="login-info">
-            <p>Este sistema funcional possui login e senha reais, disponíveis apenas para pessoas autorizadas.</p>
+            <p>Este sistema possui autenticação segura. Use suas credenciais para acessar.</p>
           </div>
-          <button type="submit" className="login-button">
-            Fazer login
+          <input type="hidden" name="csrf_token" value={csrfToken} />
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Entrando...' : 'Fazer login'}
           </button>
         </form>
       </div>
@@ -68,5 +145,3 @@ const Login = () => {
 }
 
 export default Login
-
-

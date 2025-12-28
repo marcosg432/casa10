@@ -4,7 +4,7 @@
 }
 
 .booking-header {
-  background: #003580;
+  background: #1F6FB2;
   padding: 15px 50px;
   display: flex;
   justify-content: space-between;
@@ -19,7 +19,7 @@
 
 .booking-signin {
   background: white;
-  color: #003580;
+  color: #1F6FB2;
   border: none;
   padding: 8px 20px;
   border-radius: 5px;
@@ -74,7 +74,7 @@
 }
 
 .booking-search-btn {
-  background: #006ce4;
+  background: #1F6FB2;
   color: white;
   border: none;
   padding: 12px 30px;
@@ -111,12 +111,12 @@
 }
 
 .booking-suite-card:hover {
-  border-color: #006ce4;
+  border-color: #1F6FB2;
 }
 
 .booking-suite-card.selected {
-  border-color: #006ce4;
-  background: #e3f2fd;
+  border-color: #1F6FB2;
+  background: rgba(31, 111, 178, 0.1);
 }
 
 .booking-suite-card h3 {
@@ -128,7 +128,7 @@
 .booking-suite-price {
   font-size: 20px;
   font-weight: bold;
-  color: #006ce4;
+  color: #1F6FB2;
 }
 
 .booking-reservation {
@@ -177,7 +177,7 @@
 }
 
 .booking-pagar-btn {
-  background: #006ce4;
+  background: #1F6FB2;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -191,11 +191,11 @@
 }
 
 .booking-pagar-btn:hover {
-  background: #0056b3;
+  background: #1F6FB2;
 }
 
 .booking-confirm-btn {
-  background: #006ce4;
+  background: #1F6FB2;
   color: white;
   border: none;
   padding: 15px;
@@ -234,7 +234,7 @@
 
 .booking-total-final {
   font-size: 24px;
-  color: #006ce4;
+  color: #1F6FB2;
   margin-top: 20px;
   padding-top: 20px;
   border-top: 2px solid #e0e0e0;

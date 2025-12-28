@@ -1,0 +1,314 @@
+.backup-manager-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.backup-manager-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.backup-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.backup-manager-header h1 {
+  font-size: 32px;
+  color: #1F6FB2;
+  margin: 0;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.backup-create-btn,
+.backup-import-btn {
+  background: #1F6FB2;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.3s;
+  display: inline-block;
+}
+
+.backup-create-btn:hover,
+.backup-import-btn:hover {
+  background: #1a5a8f;
+}
+
+.backup-create-btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.backup-status {
+  margin-bottom: 30px;
+}
+
+.status-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 25px;
+}
+
+.status-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.status-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.status-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.status-value.running {
+  color: #28a745;
+}
+
+.status-value.stopped {
+  color: #dc3545;
+}
+
+.status-toggle-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 5px;
+  width: fit-content;
+  transition: background 0.3s;
+}
+
+.status-toggle-btn:hover {
+  background: #5a6268;
+}
+
+.backups-list {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.backups-list h2 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.backup-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.backups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.backup-card {
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s;
+}
+
+.backup-card:hover {
+  border-color: #1F6FB2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.backup-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.backup-card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.backup-imported-badge {
+  background: #ffc107;
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.backup-card-body {
+  margin-bottom: 15px;
+}
+
+.backup-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.backup-info p {
+  margin: 8px 0;
+}
+
+.backup-tables {
+  margin-top: 15px;
+}
+
+.backup-tables ul {
+  margin: 8px 0 0 20px;
+  padding: 0;
+  list-style: disc;
+}
+
+.backup-tables li {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+.backup-card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.backup-restore-btn,
+.backup-export-btn,
+.backup-delete-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.backup-restore-btn {
+  background: #28a745;
+  color: white;
+}
+
+.backup-restore-btn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.backup-restore-btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.backup-export-btn {
+  background: #17a2b8;
+  color: white;
+}
+
+.backup-export-btn:hover {
+  background: #138496;
+}
+
+.backup-delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.backup-delete-btn:hover {
+  background: #c82333;
+}
+
+.backup-info-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 25px;
+}
+
+.backup-info-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.backup-info-section ul {
+  margin: 0;
+  padding-left: 25px;
+  color: #666;
+  line-height: 1.8;
+}
+
+.backup-info-section li {
+  margin: 8px 0;
+}
+
+@media (max-width: 768px) {
+  .backup-manager-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .backups-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-info {
+    grid-template-columns: 1fr;
+  }
+
+  .backup-card-actions {
+    flex-direction: column;
+  }
+
+  .backup-restore-btn,
+  .backup-export-btn,
+  .backup-delete-btn {
+    width: 100%;
+  }
+}
+

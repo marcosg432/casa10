@@ -10,12 +10,15 @@ const Carrinho = () => {
   const [carrinho, setCarrinho] = useState(null)
 
   useEffect(() => {
-    const carrinhoData = getCarrinho()
-    if (!carrinhoData) {
-      navigate('/')
-      return
+    const loadCarrinho = async () => {
+      const carrinhoData = await getCarrinho()
+      if (!carrinhoData) {
+        navigate('/')
+        return
+      }
+      setCarrinho(carrinhoData)
     }
-    setCarrinho(carrinhoData)
+    loadCarrinho()
   }, [navigate])
 
   if (!carrinho) return null
@@ -62,12 +65,12 @@ const Carrinho = () => {
             <div className="carrinho-header">
               <span className="carrinho-icon">🛒</span>
               <span className="carrinho-header-text">Meu carrinho</span>
-              <img src="/icones/logo boa.png" className="carrinho-logo" alt="Brisa Azul Logo" />
+              <img src="/icones/logo boa.png" className="carrinho-logo" alt="Casa10 Logo" />
             </div>
             <div className="carrinho-divider"></div>
             
             <div className="carrinho-info">
-              <p className="carrinho-hotel">Pousada Brisa Azul</p>
+              <p className="carrinho-hotel">Pousada Casa10</p>
               <p className="carrinho-dates">
                 {new Date(carrinho.checkIn).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} ➞ {new Date(carrinho.checkOut).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} ({carrinho.noites}) Noites
               </p>

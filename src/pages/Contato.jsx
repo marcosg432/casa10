@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import { sanitizeString, sanitizeEmail, sanitizePhone, sanitizeText, validateEmail, validatePhone } from '../utils/security'
 import './Contato.css'
 
 const Contato = () => {
@@ -10,18 +11,56 @@ const Contato = () => {
     telefone: '',
     mensagem: ''
   })
+  const [errors, setErrors] = useState({})
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    // Validações
+    const newErrors = {}
+    if (!formData.nome.trim()) {
+      newErrors.nome = 'Nome é obrigatório'
+    }
+    if (!validateEmail(formData.email)) {
+      newErrors.email = 'Email inválido'
+    }
+    if (!validatePhone(formData.telefone)) {
+      newErrors.telefone = 'Telefone inválido'
+    }
+    if (!formData.mensagem.trim()) {
+      newErrors.mensagem = 'Mensagem é obrigatória'
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    
+    // Sanitiza dados antes de processar
+    const sanitizedData = {
+      nome: sanitizeString(formData.nome),
+      email: sanitizeEmail(formData.email),
+      telefone: sanitizePhone(formData.telefone),
+      mensagem: sanitizeText(formData.mensagem)
+    }
+    
+    // Aqui você enviaria os dados para o servidor
+    console.log('Dados sanitizados:', sanitizedData)
     alert('Mensagem enviada com sucesso!')
     setFormData({ nome: '', email: '', telefone: '', mensagem: '' })
+    setErrors({})
   }
 
   const handleChange = (e) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     })
+    // Limpa erro do campo quando usuário começa a digitar
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' })
+    }
   }
 
   return (
@@ -47,6 +86,7 @@ const Contato = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.nome && <span style={{ color: '#c33', fontSize: '14px' }}>{errors.nome}</span>}
               </div>
               <div className="contato-form-group">
                 <label>E-mail*</label>
@@ -57,6 +97,7 @@ const Contato = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.email && <span style={{ color: '#c33', fontSize: '14px' }}>{errors.email}</span>}
               </div>
               <div className="contato-form-group">
                 <label>Telefone*</label>
@@ -67,6 +108,7 @@ const Contato = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.telefone && <span style={{ color: '#c33', fontSize: '14px' }}>{errors.telefone}</span>}
               </div>
               <div className="contato-form-group">
                 <label>Mensagem*</label>
@@ -77,11 +119,12 @@ const Contato = () => {
                   rows="5"
                   required
                 ></textarea>
+                {errors.mensagem && <span style={{ color: '#c33', fontSize: '14px' }}>{errors.mensagem}</span>}
               </div>
             </div>
             <div className="contato-form-right">
               <div className="contato-logo">
-                <img src="/icones/logo boa.png" className="contato-logo-icon" alt="Brisa Azul Logo" />
+                <img src="/icones/logo boa.png" className="contato-logo-icon" alt="Casa10 Logo" />
               </div>
               <button type="submit" className="contato-submit-button">
                 Enviar
@@ -91,7 +134,7 @@ const Contato = () => {
 
           <div className="contato-map">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.197576232123!2d-46.633331!3d-23.5505199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5a2b2ed7f3a1%3A0xab35da2f5ca62674!2sS%C3%A3o%20Paulo%2C%20SP!5e0!3m2!1spt-BR!2sbr!4v1234567890"
+              src="https://www.google.com/maps?q=Rua+Rio+Tocantins,+10+-+Hélio+Ferraz+-+Serra-ES&output=embed"
               width="100%"
               height="400"
               style={{ border: 0, borderRadius: '15px' }}

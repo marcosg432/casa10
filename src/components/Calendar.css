@@ -22,7 +22,7 @@
 }
 
 .calendar-nav:hover {
-  color: #4fc3f7;
+  color: #1F6FB2;
 }
 
 .calendar-month {
@@ -64,8 +64,8 @@
 }
 
 .calendar-day:hover:not(.disabled) {
-  background: #e3f2fd;
-  border-color: #4fc3f7;
+  background: rgba(31, 111, 178, 0.1);
+  border-color: #1F6FB2;
 }
 
 .calendar-day.other-month {
@@ -81,15 +81,15 @@
 }
 
 .calendar-day.in-range {
-  background: #e3f2fd;
-  border-color: #4fc3f7;
+  background: rgba(31, 111, 178, 0.1);
+  border-color: #1F6FB2;
 }
 
 .calendar-day.selected {
-  background: #4fc3f7;
+  background: #1F6FB2;
   color: white;
   font-weight: bold;
-  border-color: #4fc3f7;
+  border-color: #1F6FB2;
 }
 
 

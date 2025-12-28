@@ -21,7 +21,7 @@ const Header = () => {
   useEffect(() => {
     const currentPath = location.pathname
     // Nas páginas privadas (suites), sempre marcar "Quartos" como ativo
-    const suitePages = ['/suite-imperial', '/suite-luxo', '/suite-premium', '/suite-exclusiva']
+    const suitePages = ['/quarto-duplo-banheiro-privado', '/quarto-deluxe', '/quarto-duplo-amplo', '/quarto-duplo-standard', '/casa-2', '/quarto-1', '/quarto-2', '/quarto-3', '/quarto-4']
     const isSuitePage = suitePages.some(page => currentPath.startsWith(page))
     
     if (isSuitePage) {
@@ -55,8 +55,7 @@ const Header = () => {
     <header className={`header ${isWhiteBg ? 'header-white-bg' : ''}`}>
       <div className="header-container">
         <Link to="/" className="logo" onClick={closeMenu}>
-          <img src="/icones/logo boa.png" className="logo-icon" alt="Brisa Azul Logo" />
-          <span className="logo-text">brisa azul</span>
+          <img src="/icones/logo boa.png" className="logo-icon" alt="Casa10 Logo" />
         </Link>
         <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
           {isMenuOpen ? <FaTimes /> : <FaBars />}

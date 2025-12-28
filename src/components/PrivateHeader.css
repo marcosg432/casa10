@@ -20,19 +20,19 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #4fc3f7;
+  color: #1F6FB2;
 }
 
 .private-logo-icon {
-  width: 40px;
-  height: 40px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
 }
 
 .private-logo-text {
   font-size: 18px;
   font-weight: 400;
-  color: #4fc3f7;
+  color: #1F6FB2;
   text-transform: lowercase;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .private-nav-link {
-  color: #4fc3f7;
+  color: #1F6FB2;
   text-decoration: none;
   font-size: 16px;
   font-weight: 400;
@@ -64,13 +64,13 @@
 }
 
 .private-nav-link.active {
-  color: #4fc3f7;
+  color: #1F6FB2;
 }
 
 .private-active-background {
   position: absolute;
   inset: 0;
-  background: rgba(79, 195, 247, 0.15);
+  background: rgba(31, 111, 178, 0.15);
   border-radius: 50px;
   z-index: 0;
 }
@@ -90,7 +90,7 @@
   transform: translateX(-50%);
   width: 32px;
   height: 4px;
-  background: rgba(79, 195, 247, 0.9);
+  background: rgba(31, 111, 178, 0.9);
   border-radius: 4px 4px 0 0;
 }
 

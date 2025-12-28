@@ -20,16 +20,29 @@ const Financeiro = () => {
   const navigate = useNavigate()
   const [reservas, setReservas] = useState([])
   const [mesAtual, setMesAtual] = useState(new Date())
-  const [metaOcupacao] = useState(getMetaOcupacao())
+  const [metaOcupacao, setMetaOcupacao] = useState(100)
+  const [reservasMesAtual, setReservasMesAtual] = useState([])
+  const [reservasMesAnterior, setReservasMesAnterior] = useState([])
+  const [despesas, setDespesas] = useState([])
 
   useEffect(() => {
-    const todasReservas = getReservas()
-    setReservas(todasReservas)
-  }, [])
-
-  const mesAnterior = subMonths(mesAtual, 1)
-  const reservasMesAtual = getReservasPorMes(getMonth(mesAtual), getYear(mesAtual))
-  const reservasMesAnterior = getReservasPorMes(getMonth(mesAnterior), getYear(mesAnterior))
+    const loadData = async () => {
+      const todasReservas = await getReservas()
+      setReservas(todasReservas)
+      const meta = await getMetaOcupacao()
+      setMetaOcupacao(meta)
+      
+      const mesAnterior = subMonths(mesAtual, 1)
+      const reservasAtual = await getReservasPorMes(getMonth(mesAtual), getYear(mesAtual))
+      const reservasAnterior = await getReservasPorMes(getMonth(mesAnterior), getYear(mesAnterior))
+      setReservasMesAtual(reservasAtual)
+      setReservasMesAnterior(reservasAnterior)
+      
+      const despesasData = await getDespesas()
+      setDespesas(despesasData)
+    }
+    loadData()
+  }, [mesAtual])
 
   const reservasConcluidas = reservasMesAtual.filter(r => r.status === 'concluida')
   const reservasCanceladas = reservasMesAtual.filter(r => r.status === 'cancelada')
@@ -60,7 +73,6 @@ const Financeiro = () => {
   
   // Faturamento de reservas ativas (não canceladas) para cálculos de lucro
   const faturamentoConcluidas = reservasAtivas.reduce((sum, r) => sum + calcularValorReserva(r), 0)
-  const despesas = getDespesas()
   
   // Recalcular despesas: "Taxas de plataformas" como % do faturamento de Booking/Airbnb
   const reservasBookingAirbnb = reservasAtivas.filter(r => r.origem === 'Booking' || r.origem === 'Airbnb')
@@ -206,7 +218,7 @@ const Financeiro = () => {
   const porcentagemSite = temOrigem ? ((origemReservas['Site / whatsapp'] || 0) / totalOrigem * 100).toFixed(1).replace('.', ',') : '0,0'
   
   // Cores para gráfico de origem (cinza se não houver dados)
-  const coresOrigem = temOrigem ? ['#003f8f', '#ff2aa1', '#00ff00'] : ['#9e9e9e', '#9e9e9e', '#9e9e9e']
+  const coresOrigem = temOrigem ? ['#1F6FB2', '#ff2aa1', '#00ff00'] : ['#9e9e9e', '#9e9e9e', '#9e9e9e']
 
   const dadosOrigem = [
     { name: 'Site / whatsapp', value: origemReservas['Site / whatsapp'] || 0 },
@@ -287,8 +299,8 @@ const Financeiro = () => {
   // Se lucro = 0, mostrar apenas azul forte
   const coresFaturamento = temFaturamento 
     ? lucroGrafico > 0 
-      ? ['#003f8f', '#00ff00'] // Faturamento (azul) e Lucro (verde)
-      : ['#003f8f', '#003f8f'] // Apenas faturamento (azul) quando lucro = 0
+      ? ['#1F6FB2', '#00ff00'] // Faturamento (azul) e Lucro (verde)
+      : ['#1F6FB2', '#1F6FB2'] // Apenas faturamento (azul) quando lucro = 0
     : ['#9e9e9e', '#9e9e9e']
   
   // Porcentagens para ocupação (baseadas nos dados reais)
@@ -296,7 +308,7 @@ const Financeiro = () => {
   const porcentagemFalta = temOcupacao ? ((ocupacaoRestante / totalOcupacao) * 100).toFixed(1).replace('.', ',') : '0,0'
   
   // Cores para gráfico de ocupação (cinza se não houver dados)
-  const coresOcupacao = temOcupacao ? ['#00ff00', '#003f8f'] : ['#9e9e9e', '#9e9e9e']
+  const coresOcupacao = temOcupacao ? ['#00ff00', '#1F6FB2'] : ['#9e9e9e', '#9e9e9e']
 
   const dadosOcupacao = [
     { name: 'Ocupação', value: ocupacaoRealizada },
@@ -305,7 +317,7 @@ const Financeiro = () => {
 
   const COLORS = {
     green: '#4caf50',
-    blue: '#2196f3',
+    blue: '#1F6FB2',
     red: '#f44336',
     pink: '#e91e63',
     gray: '#9e9e9e'
@@ -433,7 +445,7 @@ const Financeiro = () => {
             <h3>Origem de reserva</h3>
             <div className="grafico-legenda">
               <div className="legenda-item">
-                <span className="color-box" style={{ background: '#003f8f' }}></span>
+                <span className="color-box" style={{ background: '#1F6FB2' }}></span>
                 <span className="legenda-texto">Booking {porcentagemBooking}%</span>
               </div>
               <div className="legenda-item">
@@ -509,7 +521,7 @@ const Financeiro = () => {
             <h3>Faturamento</h3>
             <div className="grafico-legenda">
               <div className="legenda-item">
-                <span className="color-box" style={{ background: temFaturamento ? '#003f8f' : '#9e9e9e' }}></span>
+                <span className="color-box" style={{ background: temFaturamento ? '#1F6FB2' : '#9e9e9e' }}></span>
                 <span className="legenda-texto">Faturamento {porcentagemFaturamento}%</span>
               </div>
               <div className="legenda-item">
@@ -549,7 +561,7 @@ const Financeiro = () => {
                 <span className="legenda-texto">Ocupação {porcentagemOcupacao}%</span>
               </div>
               <div className="legenda-item">
-                <span className="color-box" style={{ background: '#003f8f' }}></span>
+                <span className="color-box" style={{ background: '#1F6FB2' }}></span>
                 <span className="legenda-texto">Falta {porcentagemFalta}%</span>
               </div>
             </div>

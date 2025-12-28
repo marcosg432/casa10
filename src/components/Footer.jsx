@@ -8,12 +8,12 @@ const Footer = () => {
       <div className="home-footer-content">
         <div className="home-footer-left">
           <div className="home-footer-logo">
-            <img src="/icones/logo boa.png" alt="Brisa Azul Logo" />
+            <img src="/icones/logo boa.png" alt="Casa10 Logo" />
           </div>
           <h2 className="home-footer-title">
             Bem-vindo<br />
             ao<br />
-            Brisa Azul
+            Casa10inn
           </h2>
         </div>
 
@@ -29,10 +29,9 @@ const Footer = () => {
 
         <div className="home-footer-right">
           <div className="home-footer-contact">
-            <p className="home-footer-phone">(11) 99000-0000</p>
-            <p className="home-footer-email">seu@email.com</p>
+            <p className="home-footer-phone">27 999095799</p>
+            <p className="home-footer-email">casa10inn@gmail.com</p>
           </div>
-          <button className="home-footer-button">Fazer reserva</button>
         </div>
       </div>
     </footer>

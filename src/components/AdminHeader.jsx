@@ -5,8 +5,8 @@ import './AdminHeader.css'
 const AdminHeader = ({ currentPage }) => {
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('/admin/login')
   }
 
@@ -14,7 +14,7 @@ const AdminHeader = ({ currentPage }) => {
     <header className="admin-header">
       <div className="admin-header-top">
         <Link to="/admin" className="admin-logo">
-          <span className="admin-logo-text">brisa azul</span>
+          <img src="/icones/logo boa.png" className="admin-logo-icon" alt="Casa10 Logo" />
         </Link>
         <button onClick={handleLogout} className="admin-logout">Sair</button>
       </div>
@@ -36,6 +36,12 @@ const AdminHeader = ({ currentPage }) => {
         </Link>
         <Link to="/admin/despesas" className={currentPage === 'despesas' ? 'active' : ''}>
           Gerenciar despesas
+        </Link>
+        <Link to="/admin/database" className={currentPage === 'database' ? 'active' : ''}>
+          Banco de Dados
+        </Link>
+        <Link to="/admin/backup" className={currentPage === 'backup' ? 'active' : ''}>
+          Backups
         </Link>
       </nav>
     </header>

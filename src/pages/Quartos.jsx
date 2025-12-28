@@ -12,8 +12,7 @@ const Quartos = () => {
         <div className="quartos-hero-background"></div>
         <Header />
         <div className="quartos-hero-content">
-          <h1 className="quartos-hero-title">Brisa Azul</h1>
-          <p className="quartos-hero-subtitle">RESORT & SPA HOTEL</p>
+          <h1 className="quartos-hero-title">Casa10</h1>
         </div>
       </section>
 
@@ -29,45 +28,100 @@ const Quartos = () => {
       {/* Quartos Cards */}
       <section className="quartos-cards-section">
         <div className="quartos-cards-container">
+          {/* Primeiros 4 cards em grid de 2 colunas */}
           <div className="quartos-page-card">
-            <div className="quartos-page-card-image imperial"></div>
+            <div className="quartos-page-card-image quarto-duplo-amplo"></div>
             <div className="quartos-page-card-icon"><FaTv /></div>
-            <h3 className="quartos-page-card-title">Suíte Brisa Premium</h3>
+            <h3 className="quartos-page-card-title">Quarto Duplo Amplo</h3>
             <p className="quartos-page-card-description">
-              A Suíte Brisa Premium é a escolha perfeita para quem deseja uma experiência exclusiva. Conta com acabamento refinado e um ambiente amplo, pensado para momentos especiais e inesquecíveis.
+              O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.
             </p>
             <div className="quartos-page-card-price">R$ 450 / Noite</div>
-            <Link to="/suite-premium" className="quartos-page-card-button">saiba mais</Link>
+            <Link to="/quarto-duplo-amplo" className="quartos-page-card-button">saiba mais</Link>
           </div>
           <div className="quartos-page-card">
-            <div className="quartos-page-card-image exclusiva"></div>
+            <div className="quartos-page-card-image quarto-duplo-standard"></div>
             <div className="quartos-page-card-icon"><FaTv /></div>
-            <h3 className="quartos-page-card-title">Suíte Brisa Exclusiva (novo quarto)</h3>
+            <h3 className="quartos-page-card-title">Quarto Duplo Standard</h3>
             <p className="quartos-page-card-description">
-              A Suíte Brisa Exclusiva combina elegância, conforto e privacidade em um só espaço. Ideal para quem busca uma estadia diferenciada, com mais tranquilidade e uma experiência única no Brisa Império.
+              O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha bem equipada. O quarto duplo também disponibiliza uma churrasqueira. O quarto duplo conta com ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade dispõe de 1 cama.
             </p>
             <div className="quartos-page-card-price">R$ 550 / Noite</div>
-            <Link to="/suite-exclusiva" className="quartos-page-card-button">saiba mais</Link>
+            <Link to="/quarto-duplo-standard" className="quartos-page-card-button">saiba mais</Link>
           </div>
           <div className="quartos-page-card">
-            <div className="quartos-page-card-image suite3"></div>
+            <div className="quartos-page-card-image quarto-deluxe"></div>
             <div className="quartos-page-card-icon"><FaTv /></div>
-            <h3 className="quartos-page-card-title">Suíte Brisa Deluxe</h3>
+            <h3 className="quartos-page-card-title">Quarto Deluxe</h3>
             <p className="quartos-page-card-description">
-              A Suíte Brisa Deluxe oferece um ambiente sofisticado com vista privilegiada e todos os detalhes para tornar sua estadia inesquecível. Perfeita para casais em busca de romance e tranquilidade.
+              O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto duplo também conta com uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. A unidade possui 2 camas.
             </p>
             <div className="quartos-page-card-price">R$ 400 / Noite</div>
-            <Link to="/suite-deluxe" className="quartos-page-card-button">saiba mais</Link>
+            <Link to="/quarto-deluxe" className="quartos-page-card-button">saiba mais</Link>
           </div>
           <div className="quartos-page-card">
-            <div className="quartos-page-card-image suite4"></div>
+            <div className="quartos-page-card-image quarto-duplo-banheiro-privado"></div>
             <div className="quartos-page-card-icon"><FaTv /></div>
-            <h3 className="quartos-page-card-title">Suíte Brisa Master</h3>
+            <h3 className="quartos-page-card-title">Quarto Duplo com Banheiro Privado</h3>
             <p className="quartos-page-card-description">
-              A Suíte Brisa Master é nosso espaço mais amplo e luxuoso, projetado para proporcionar máxima privacidade e conforto. Inclui área de estar exclusiva e todos os mimos para uma experiência premium.
+              O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.
             </p>
             <div className="quartos-page-card-price">R$ 500 / Noite</div>
-            <Link to="/suite-master" className="quartos-page-card-button">saiba mais</Link>
+            <Link to="/quarto-duplo-banheiro-privado" className="quartos-page-card-button">saiba mais</Link>
+          </div>
+          
+          {/* Casa 2 - Card único em linha completa com cards internos */}
+          <div className="quartos-page-card quartos-page-card-full-width quartos-page-card-casa-2">
+            <div className="casa-2-main-content">
+              <div className="quartos-page-card-image casa-2"></div>
+              <div className="quartos-page-card-icon"><FaTv /></div>
+              <h3 className="quartos-page-card-title">Casa 2</h3>
+              <p className="quartos-page-card-description">
+                Casa10inn fornece acomodação em Carapina com banheira de hidromassagem. Parque Municipal de Mangue Seco fica a 8,2 km de distância. Você contará com Wi-Fi grátis e estacionamento privativo disponível no local nesta acomodação com ar-condicionado. Parque Pedra da Cebola fica a 6,5 km de distância.
+
+                A casa de temporada oferece 4 quartos, TV de tela plana com canais via satélite, cozinha com geladeira e forno, máquina de lavar roupa, além de 3 banheiros com chuveiro. A casa de temporada oferece toalhas e roupa de cama.
+
+                Casa10inn fica a 9,2 km de Praça dos Namorados e a 12 km de Praça do Papa. O Aeroporto de Aeroporto de Vitória - Eurico de Aguiar Salles fica a 1 km de distância.
+              </p>
+              <div className="quartos-page-card-price">R$ 300 / Noite</div>
+              <Link to="/casa-2" className="quartos-page-card-button">saiba mais</Link>
+            </div>
+            
+            {/* Cards internos da Casa 2 - sem botões */}
+            <div className="casa-2-internal-cards">
+              <div className="quartos-page-card quartos-page-card-internal">
+                <div className="quartos-page-card-image quarto-1"></div>
+                <div className="quartos-page-card-icon"><FaTv /></div>
+                <h3 className="quartos-page-card-title">Quarto 1</h3>
+                <p className="quartos-page-card-description">
+                  3 camas de solteiro
+                </p>
+              </div>
+              <div className="quartos-page-card quartos-page-card-internal">
+                <div className="quartos-page-card-image quarto-2-novo"></div>
+                <div className="quartos-page-card-icon"><FaTv /></div>
+                <h3 className="quartos-page-card-title">Quarto 2</h3>
+                <p className="quartos-page-card-description">
+                  5 camas de solteiros
+                </p>
+              </div>
+              <div className="quartos-page-card quartos-page-card-internal">
+                <div className="quartos-page-card-image quarto-3"></div>
+                <div className="quartos-page-card-icon"><FaTv /></div>
+                <h3 className="quartos-page-card-title">Quarto 3</h3>
+                <p className="quartos-page-card-description">
+                  3 camas de solteiro
+                </p>
+              </div>
+              <div className="quartos-page-card quartos-page-card-internal">
+                <div className="quartos-page-card-image quarto-4"></div>
+                <div className="quartos-page-card-icon"><FaTv /></div>
+                <h3 className="quartos-page-card-title">Quarto 4</h3>
+                <p className="quartos-page-card-description">
+                  4 camas de solteiro
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

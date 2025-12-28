@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { saveReserva, formatarMoeda } from '../utils/storage'
+import { sanitizeString, sanitizeEmail, sanitizePhone, validateEmail, validatePhone, validateRequired } from '../utils/security'
 import { format } from 'date-fns'
 import Calendar from '../components/Calendar'
 import './Booking.css'
@@ -20,10 +21,11 @@ const Booking = () => {
   })
 
   const suites = [
-    { id: 'imperial', nome: 'Suíte Brisa Imperial', preco: 249 },
-    { id: 'luxo', nome: 'Suíte Brisa Luxo', preco: 350 },
-    { id: 'premium', nome: 'Suíte Brisa Premium', preco: 450 },
-    { id: 'exclusiva', nome: 'Suíte Brisa Exclusiva', preco: 550 }
+    { id: 'premium', nome: 'Quarto Duplo Amplo', preco: 450 },
+    { id: 'exclusiva', nome: 'Quarto Duplo Standard', preco: 550 },
+    { id: 'luxo', nome: 'Quarto Deluxe', preco: 400 },
+    { id: 'imperial', nome: 'Quarto Duplo com Banheiro Privado', preco: 500 },
+    { id: 'casa2', nome: 'Casa 2', preco: 300 }
   ]
 
   const suiteSelecionada = suites.find(s => s.id === formData.quartoId)
@@ -62,10 +64,30 @@ const Booking = () => {
 
   const handleFichaSubmit = (e) => {
     e.preventDefault()
-    if (!formData.nome || !formData.email || !formData.telefone) {
-      alert('Por favor, preencha todos os campos')
+    
+    // Validações
+    if (!validateRequired(formData.nome)) {
+      alert('Por favor, preencha o nome')
       return
     }
+    if (!validateEmail(formData.email)) {
+      alert('Por favor, insira um email válido')
+      return
+    }
+    if (!validatePhone(formData.telefone)) {
+      alert('Por favor, insira um telefone válido')
+      return
+    }
+    
+    // Sanitiza dados
+    const sanitizedData = {
+      ...formData,
+      nome: sanitizeString(formData.nome),
+      email: sanitizeEmail(formData.email),
+      telefone: sanitizePhone(formData.telefone)
+    }
+    
+    setFormData(sanitizedData)
     setEtapa('carrinho')
   }
 
@@ -73,14 +95,18 @@ const Booking = () => {
     setEtapa('checkout')
   }
 
-  const handleCheckoutFinalizar = () => {
+  const handleCheckoutFinalizar = async () => {
+    // Sanitiza dados finais antes de salvar
     const reserva = {
       ...formData,
+      nome: sanitizeString(formData.nome),
+      email: sanitizeEmail(formData.email),
+      telefone: sanitizePhone(formData.telefone),
       total: calcularTotal(),
       origem: 'Booking',
       metodoPagamento: 'Cartão'
     }
-    saveReserva(reserva)
+    await saveReserva(reserva)
     alert('Reserva realizada com sucesso!')
     navigate('/')
   }
@@ -103,7 +129,7 @@ const Booking = () => {
             <div className="booking-form-row">
               <div className="booking-form-group">
                 <label>Destino</label>
-                <input type="text" value="Brisa Azul Resort" readOnly />
+                <input type="text" value="Casa10" readOnly />
               </div>
               <div className="booking-form-group">
                 <label>Check-in</label>

@@ -5,9 +5,9 @@ import './Sobre.css'
 
 // Sempre as MESMAS 3 imagens, apenas trocando de posição (carrossel)
 const carouselImages = [
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400',
-  'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
-  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400'
+  '/imagem/sobre/sobre-01.jpg',
+  '/imagem/sobre/sobre-02.jpg',
+  '/imagem/sobre/sobre-03.jpg'
 ]
 
 const Sobre = () => {
@@ -33,14 +33,13 @@ const Sobre = () => {
         <div className="sobre-page-hero-background"></div>
         <Header />
         <div className="sobre-page-hero-content">
-          <h1 className="sobre-page-hero-title">Brisa Azul</h1>
-          <p className="sobre-page-hero-subtitle">RESORT & SPA HOTEL</p>
+          <h1 className="sobre-page-hero-title">Casa10</h1>
         </div>
       </section>
 
       {/* Conheça Section */}
       <section className="conheca-section">
-        <h2 className="conheca-title">Conheça o Brisa Azul</h2>
+        <h2 className="conheca-title">Conheça o Casa10</h2>
         <div className="conheca-images">
           <div
             className="conheca-image-left"
@@ -64,7 +63,7 @@ const Sobre = () => {
           <h2 className="historia-title">Nossa Historia</h2>
           <div className="historia-text">
             <p>
-              O Hotel & Resort Brisa Império nasceu com o propósito de oferecer mais do que hospedagem: criar experiências marcantes de conforto, descanso e bem-estar. Nossa missão é combinar qualidade, serviço humanizado e um ambiente acolhedor, onde cada hóspede se sinta especial e único.
+              O Casa10 nasceu com o propósito de oferecer mais do que hospedagem: criar experiências marcantes de conforto, descanso e bem-estar. Nossa missão é combinar qualidade, serviço humanizado e um ambiente acolhedor, onde cada hóspede se sinta especial e único.
             </p>
             <p>
               Inspirados pela tranquilidade da brisa e pela beleza natural da região, cada detalhe foi pensado para proporcionar momentos únicos. Ao longo dos anos, evoluímos nossa estrutura e serviços, sempre mantendo o compromisso com a excelência, a hospitalidade e o cuidado com nossos hóspedes.

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FaPlus } from 'react-icons/fa'
-import { getFuncionarios, saveFuncionario, deleteFuncionario, getUsuarioLogado } from '../../utils/storage'
+import { getFuncionarios, saveFuncionario, deleteFuncionario, getUsuarioLogado, createAdminUser } from '../../utils/storage'
+import { sanitizeString, sanitizeEmail, validateEmail, validatePassword, validateRequired } from '../../utils/security'
 import AdminHeader from '../../components/AdminHeader'
 import './Gerenciamento.css'
 
@@ -8,29 +9,61 @@ const Gerenciamento = () => {
   const [funcionarios, setFuncionarios] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({ nome: '', email: '', senha: '' })
-  const usuarioLogado = getUsuarioLogado()
+  const [usuarioLogado, setUsuarioLogado] = useState(null)
 
   useEffect(() => {
-    const todosFuncionarios = getFuncionarios()
-    setFuncionarios(todosFuncionarios)
+    const loadData = async () => {
+      const todosFuncionarios = await getFuncionarios()
+      setFuncionarios(todosFuncionarios)
+      const usuario = await getUsuarioLogado()
+      setUsuarioLogado(usuario)
+    }
+    loadData()
   }, [])
 
   const handleAdd = () => {
     setShowForm(true)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    saveFuncionario(formData)
-    setFuncionarios(getFuncionarios())
-    setFormData({ nome: '', email: '', senha: '' })
-    setShowForm(false)
+    
+    // Validações
+    if (!validateRequired(formData.nome)) {
+      alert('Por favor, preencha o nome')
+      return
+    }
+    if (!validateEmail(formData.email)) {
+      alert('Por favor, insira um email válido')
+      return
+    }
+    if (!validatePassword(formData.senha)) {
+      alert('A senha deve ter pelo menos 6 caracteres')
+      return
+    }
+    
+    try {
+      // Sanitiza e cria usuário admin com senha hasheada
+      const nomeSanitizado = sanitizeString(formData.nome)
+      const emailSanitizado = sanitizeEmail(formData.email)
+      
+      await createAdminUser(nomeSanitizado, emailSanitizado, formData.senha)
+      
+      const todosFuncionarios = await getFuncionarios()
+      setFuncionarios(todosFuncionarios)
+      setFormData({ nome: '', email: '', senha: '' })
+      setShowForm(false)
+      alert('Funcionário criado com sucesso!')
+    } catch (err) {
+      alert(`Erro ao criar funcionário: ${err.message}`)
+    }
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Deseja realmente excluir este funcionário?')) {
-      deleteFuncionario(id)
-      setFuncionarios(getFuncionarios())
+      await deleteFuncionario(id)
+      const todosFuncionarios = await getFuncionarios()
+      setFuncionarios(todosFuncionarios)
     }
   }
 

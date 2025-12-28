@@ -59,26 +59,30 @@
 .quarto-admin-image-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+  background: linear-gradient(135deg, #1F6FB2 0%, #1F6FB2 100%);
   background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400');
   background-size: cover;
   background-position: center;
 }
 
 .quarto-admin-image-placeholder.imperial {
-  background-image: url('https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=600');
+  background-image: url('/imagem/quarto-duplo-banheiro-privado.jpg');
 }
 
 .quarto-admin-image-placeholder.luxo {
-  background-image: url('https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600');
+  background-image: url('/imagem/quarto-deluxe.jpg');
 }
 
 .quarto-admin-image-placeholder.premium {
-  background-image: url('https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600');
+  background-image: url('/imagem/quarto-duplo-amplo.jpg');
 }
 
 .quarto-admin-image-placeholder.exclusiva {
-  background-image: url('https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600');
+  background-image: url('/imagem/quarto-duplo-standard.jpg');
+}
+
+.quarto-admin-image-placeholder.casa2 {
+  background-image: url('/imagem/casa-2.jpg');
 }
 
 .quarto-admin-info {

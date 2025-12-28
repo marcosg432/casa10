@@ -11,7 +11,7 @@ const images = [
   {
     id: 2,
     src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800",
-    alt: "Resort luxuoso",
+    alt: "Casa10",
   },
   {
     id: 3,

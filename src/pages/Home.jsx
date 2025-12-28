@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FaSun, FaWater, FaStar, FaHeart, FaUmbrellaBeach } from 'react-icons/fa'
+import { FaStar, FaHeart } from 'react-icons/fa'
 import Header from '../components/Header'
 import { VerticalImageStack } from '../components/VerticalImageStack'
 import CircularImages from '../components/CircularImages'
@@ -25,8 +25,7 @@ const Home = () => {
         </div>
         <Header />
         <div className="hero-content">
-          <h1 className="hero-title">Brisa Azul</h1>
-          <p className="hero-subtitle">RESORT & SPA HOTEL</p>
+          <h1 className="hero-title">Casa10</h1>
         </div>
       </section>
 
@@ -36,7 +35,7 @@ const Home = () => {
           <div className="sobre-text">
             <h2 className="sobre-title">sobre nós</h2>
             <p className="sobre-paragraph">
-              O Hotel & Resort Brisa Império nasceu com o propósito de oferecer mais do que hospedagem: criar experiências marcantes de conforto, descanso e bem-estar. Somos um refúgio exclusivo onde o conforto, a sofisticação e a natureza se encontram em perfeita harmonia.
+              O Casa10 nasceu com o propósito de oferecer mais do que hospedagem: criar experiências marcantes de conforto, descanso e bem-estar. Somos um refúgio exclusivo onde o conforto, a sofisticação e a natureza se encontram em perfeita harmonia.
             </p>
             <p className="sobre-paragraph">
               Oferecemos uma experiência única, combinando estrutura moderna, serviço de alto padrão e ambientes acolhedores, ideais para relaxar e viver momentos inesquecíveis em família ou a dois. Nossos quartos confortáveis, áreas de lazer completas e localização privilegiada garantem tranquilidade, bem-estar e experiências memoráveis.
@@ -49,7 +48,7 @@ const Home = () => {
           <div className="sobre-image">
             <img
               src="/imagem/foto modelo.png"
-              alt="Brisa Azul Resort"
+              alt="Casa10"
               className="sobre-image-foto"
             />
           </div>
@@ -60,31 +59,31 @@ const Home = () => {
       <section className="quartos-section">
         <div className="quartos-container">
           <div className="quartos-card">
-            <div className="quartos-card-image imperial"></div>
-            <h3 className="quartos-card-title">Suíte Brisa Imperial</h3>
+            <div className="quartos-card-image premium"></div>
+            <h3 className="quartos-card-title">Quarto Duplo Amplo</h3>
             <p className="quartos-card-description">
-              Uma suíte elegante e aconchegante, pensada para quem busca conforto e tranquilidade. Ideal para casais que desejam relaxar em um ambiente sofisticado, com clima intimista e acolhedor.
+              O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.
             </p>
-            <div className="quartos-card-price">R$ 249 / Noite</div>
-            <Link to="/suite-imperial" className="quartos-card-button">saiba mais</Link>
+            <div className="quartos-card-price">R$ 450 / Noite</div>
+            <Link to="/quarto-duplo-amplo" className="quartos-card-button">saiba mais</Link>
+          </div>
+          <div className="quartos-card">
+            <div className="quartos-card-image exclusiva"></div>
+            <h3 className="quartos-card-title">Quarto Duplo Standard</h3>
+            <p className="quartos-card-description">
+              O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha bem equipada. O quarto duplo também disponibiliza uma churrasqueira. O quarto duplo conta com ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade dispõe de 1 cama.
+            </p>
+            <div className="quartos-card-price">R$ 550 / Noite</div>
+            <Link to="/quarto-duplo-standard" className="quartos-card-button">saiba mais</Link>
           </div>
           <div className="quartos-card">
             <div className="quartos-card-image luxo"></div>
-            <h3 className="quartos-card-title">Suíte Brisa Luxo</h3>
+            <h3 className="quartos-card-title">Quarto Deluxe</h3>
             <p className="quartos-card-description">
-              Espaçosa e confortável, a Suíte Brisa Luxo oferece uma experiência premium com design moderno e detalhes que garantem bem-estar, descanso e uma estadia inesquecível.
+              O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto duplo também conta com uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. A unidade possui 2 camas.
             </p>
-            <div className="quartos-card-price">R$ 350 / Noite</div>
-            <Link to="/suite-luxo" className="quartos-card-button">saiba mais</Link>
-          </div>
-          <div className="quartos-card">
-            <div className="quartos-card-image premium"></div>
-            <h3 className="quartos-card-title">Suíte Brisa Premium</h3>
-            <p className="quartos-card-description">
-              A opção mais exclusiva do hotel, perfeita para quem deseja viver momentos especiais. Conta com ambiente amplo, acabamento refinado e máximo conforto para uma experiência completa.
-            </p>
-            <div className="quartos-card-price">R$ 450 / Noite</div>
-            <Link to="/suite-premium" className="quartos-card-button">saiba mais</Link>
+            <div className="quartos-card-price">R$ 400 / Noite</div>
+            <Link to="/quarto-deluxe" className="quartos-card-button">saiba mais</Link>
           </div>
         </div>
       </section>
@@ -123,18 +122,8 @@ const Home = () => {
 
       {/* azul */}
       <section className="porque-section">
-        <h2 className="porque-title">Por que escolher o Brisa Azul?</h2>
+        <h2 className="porque-title">Por que escolher o Casa10?</h2>
         <div className="porque-grid">
-          <div className="porque-card">
-            <div className="porque-card-header">
-              <h3 className="porque-card-title">PRAIAS MAIS BONITAS DA REGIÃO</h3>
-              <FaSun className="porque-icon sol" />
-            </div>
-            <p className="porque-card-text">
-              Estamos cercados por paisagens naturais deslumbrantes, com praias de águas cristalinas e cenários perfeitos para relaxar e viver momentos inesquecíveis.
-            </p>
-            <FaWater className="porque-icon onda" />
-          </div>
           <div className="porque-card">
             <div className="porque-card-header">
               <FaStar className="porque-icon estrela" />
@@ -151,13 +140,6 @@ const Home = () => {
               Nossa equipe é treinada para receber cada hóspede com atenção, cuidado e hospitalidade, garantindo uma experiência única do início ao fim.
             </p>
             <FaHeart className="porque-icon coracao" />
-          </div>
-          <div className="porque-card">
-            <h3 className="porque-card-title">EXPERIÊNCIA COMPLETA DE DESCANSO</h3>
-            <p className="porque-card-text">
-              Aqui você encontra tranquilidade, lazer e contato com a natureza em um só lugar, ideal para renovar as energias e aproveitar cada momento.
-            </p>
-            <FaUmbrellaBeach className="porque-icon praia" />
           </div>
         </div>
       </section>

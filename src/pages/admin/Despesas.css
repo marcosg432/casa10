@@ -60,8 +60,8 @@
 
 .despesas-add-button {
   padding: 10px 20px;
-  border: 1px solid #2196f3;
-  background: #2196f3;
+  border: 1px solid #1F6FB2;
+  background: #1F6FB2;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
@@ -70,7 +70,7 @@
 }
 
 .despesas-add-button:hover {
-  background: #1976d2;
+  background: #1F6FB2;
 }
 
 .despesas-delete-button {
@@ -133,7 +133,7 @@
   right: 10px;
   width: 20px;
   height: 20px;
-  background: #4fc3f7;
+  background: #1F6FB2;
   border-radius: 50%;
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }

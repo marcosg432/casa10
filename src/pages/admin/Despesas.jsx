@@ -11,8 +11,8 @@ const Despesas = () => {
   const [metaOcupacao, setMetaOcupacaoState] = useState(100)
 
   // Função para calcular faturamento de Booking e Airbnb do mês atual
-  const calcularFaturamentoBookingAirbnb = () => {
-    const todasReservas = getReservas()
+  const calcularFaturamentoBookingAirbnb = async () => {
+    const todasReservas = await getReservas()
     const mesAtual = new Date()
     const mes = mesAtual.getMonth()
     const ano = mesAtual.getFullYear()
@@ -53,35 +53,38 @@ const Despesas = () => {
   }
 
   useEffect(() => {
-    const todasDespesas = getDespesas()
-    // Recalcular total de "Taxas de plataformas" ao carregar
-    const despesasAtualizadas = todasDespesas.map(d => {
-      if (d.categoria && d.categoria.toLowerCase().includes('taxa') && d.quantidade) {
-        const porcentagem = parseFloat(d.quantidade) || 0
-        const faturamentoBookingAirbnb = calcularFaturamentoBookingAirbnb()
-        const totalCalculado = (faturamentoBookingAirbnb * porcentagem) / 100
-        return { ...d, total: totalCalculado }
-      }
-      return d
-    })
-    setDespesas(despesasAtualizadas)
-    setMetaOcupacaoState(getMetaOcupacao())
+    const loadData = async () => {
+      const todasDespesas = await getDespesas()
+      const faturamentoBookingAirbnb = await calcularFaturamentoBookingAirbnb()
+      // Recalcular total de "Taxas de plataformas" ao carregar
+      const despesasAtualizadas = todasDespesas.map(d => {
+        if (d.categoria && d.categoria.toLowerCase().includes('taxa') && d.quantidade) {
+          const porcentagem = parseFloat(d.quantidade) || 0
+          const totalCalculado = (faturamentoBookingAirbnb * porcentagem) / 100
+          return { ...d, total: totalCalculado }
+        }
+        return d
+      })
+      setDespesas(despesasAtualizadas)
+      setMetaOcupacaoState(await getMetaOcupacao())
+    }
+    loadData()
   }, [])
 
   const handleEdit = () => {
     setIsEditing(true)
   }
 
-  const handleSave = () => {
-    updateDespesas(despesas)
+  const handleSave = async () => {
+    await updateDespesas(despesas)
     setIsEditing(false)
   }
 
-  const handleChange = (id, field, value) => {
-    setDespesas(despesas.map(d => {
+  const handleChange = async (id, field, value) => {
+    const despesasAtualizadas = await Promise.all(despesas.map(async d => {
       if (d.id === id) {
         if (field === 'categoria') {
-          return { ...d, categoria: value }
+          return { ...d, categoria: sanitizeString(value) }
         } else if (field === 'quantidade') {
           // Se for "Taxas de plataformas", tratar como porcentagem
           const isTaxasPlataformas = d.categoria && d.categoria.toLowerCase().includes('taxa')
@@ -93,7 +96,7 @@ const Despesas = () => {
             novaDespesa.quantidade = porcentagem.toString()
             
             // Calcular total como porcentagem do faturamento de Booking/Airbnb
-            const faturamentoBookingAirbnb = calcularFaturamentoBookingAirbnb()
+            const faturamentoBookingAirbnb = await calcularFaturamentoBookingAirbnb()
             const totalCalculado = (faturamentoBookingAirbnb * porcentagem) / 100
             novaDespesa.total = totalCalculado
           }
@@ -126,6 +129,7 @@ const Despesas = () => {
       }
       return d
     }))
+    setDespesas(despesasAtualizadas)
   }
 
   const handleAddRow = () => {

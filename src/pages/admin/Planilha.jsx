@@ -11,31 +11,34 @@ const Planilha = () => {
   const [quartos, setQuartos] = useState([])
 
   useEffect(() => {
-    // Buscar todas as reservas e filtrar por mês selecionado
-    const todasReservas = getReservas()
-    const mes = mesSelecionado.getMonth()
-    const ano = mesSelecionado.getFullYear()
-    
-    // Filtrar reservas que estão ativas no mês selecionado
-    // (check-in ou check-out no mês, ou que atravessam o mês)
-    const reservasMes = todasReservas.filter(r => {
-      if (!r.checkIn || !r.checkOut) return false
-      const checkIn = new Date(r.checkIn)
-      const checkOut = new Date(r.checkOut)
-      const checkInMes = checkIn.getMonth()
-      const checkInAno = checkIn.getFullYear()
-      const checkOutMes = checkOut.getMonth()
-      const checkOutAno = checkOut.getFullYear()
+    const loadData = async () => {
+      // Buscar todas as reservas e filtrar por mês selecionado
+      const todasReservas = await getReservas()
+      const mes = mesSelecionado.getMonth()
+      const ano = mesSelecionado.getFullYear()
       
-      // Reserva está no mês se check-in ou check-out está no mês, ou se atravessa o mês
-      return (checkInMes === mes && checkInAno === ano) || 
-             (checkOutMes === mes && checkOutAno === ano) ||
-             (checkIn <= new Date(ano, mes + 1, 0) && checkOut >= new Date(ano, mes, 1))
-    })
-    
-    setReservas(reservasMes)
-    setDespesas(getDespesas())
-    setQuartos(getQuartos())
+      // Filtrar reservas que estão ativas no mês selecionado
+      // (check-in ou check-out no mês, ou que atravessam o mês)
+      const reservasMes = todasReservas.filter(r => {
+        if (!r.checkIn || !r.checkOut) return false
+        const checkIn = new Date(r.checkIn)
+        const checkOut = new Date(r.checkOut)
+        const checkInMes = checkIn.getMonth()
+        const checkInAno = checkIn.getFullYear()
+        const checkOutMes = checkOut.getMonth()
+        const checkOutAno = checkOut.getFullYear()
+        
+        // Reserva está no mês se check-in ou check-out está no mês, ou se atravessa o mês
+        return (checkInMes === mes && checkInAno === ano) || 
+               (checkOutMes === mes && checkOutAno === ano) ||
+               (checkIn <= new Date(ano, mes + 1, 0) && checkOut >= new Date(ano, mes, 1))
+      })
+      
+      setReservas(reservasMes)
+      setDespesas(await getDespesas())
+      setQuartos(await getQuartos())
+    }
+    loadData()
   }, [mesSelecionado])
 
   // Função auxiliar para calcular o valor de uma reserva (200 reais por noite)

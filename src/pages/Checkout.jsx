@@ -4,6 +4,7 @@ import { FaExclamationTriangle } from 'react-icons/fa'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { getCarrinho, clearCarrinho, saveReserva, formatarMoeda } from '../utils/storage'
+import { sanitizeString, sanitizeEmail, sanitizePhone } from '../utils/security'
 import './Checkout.css'
 
 const Checkout = () => {
@@ -13,29 +14,35 @@ const Checkout = () => {
   const [reservaConcluida, setReservaConcluida] = useState(false)
 
   useEffect(() => {
-    const carrinhoData = getCarrinho()
-    if (!carrinhoData) {
-      navigate('/')
-      return
+    const loadCarrinho = async () => {
+      const carrinhoData = await getCarrinho()
+      if (!carrinhoData) {
+        navigate('/')
+        return
+      }
+      setCarrinho(carrinhoData)
     }
-    setCarrinho(carrinhoData)
+    loadCarrinho()
   }, [navigate])
 
-  const handlePagamento = () => {
+  const handlePagamento = async () => {
     if (!metodoPagamento) {
       alert('Por favor, selecione um método de pagamento')
       return
     }
 
-    // Salvar reserva
+    // Sanitiza dados antes de salvar
     const reserva = {
       ...carrinho,
-      metodoPagamento,
+      nome: carrinho.nome ? sanitizeString(carrinho.nome) : carrinho.nome,
+      email: carrinho.email ? sanitizeEmail(carrinho.email) : carrinho.email,
+      telefone: carrinho.telefone ? sanitizePhone(carrinho.telefone) : carrinho.telefone,
+      metodoPagamento: sanitizeString(metodoPagamento),
       origem: 'Site / whatsapp'
     }
 
-    saveReserva(reserva)
-    clearCarrinho()
+    await saveReserva(reserva)
+    await clearCarrinho()
     setReservaConcluida(true)
 
     setTimeout(() => {

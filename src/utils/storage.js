@@ -1,201 +1,289 @@
-// Sistema de armazenamento local para simular banco de dados
+// Sistema de armazenamento usando IndexedDB (Dexie)
+import db, { migrateFromLocalStorage } from './db.js'
+import { hashPassword, comparePassword, sanitizeEmail, sanitizeString, createSession, validateSession, clearSession } from './security.js'
 
-const STORAGE_KEYS = {
-  RESERVAS: 'brisa_azul_reservas',
-  QUARTOS: 'brisa_azul_quartos',
-  DESPESAS: 'brisa_azul_despesas',
-  FUNCIONARIOS: 'brisa_azul_funcionarios',
-  USUARIO_LOGADO: 'brisa_azul_usuario_logado',
-  CARRINHO: 'brisa_azul_carrinho',
-  META_OCUPACAO: 'brisa_azul_meta_ocupacao'
-}
+// Garante que a migração seja executada
+migrateFromLocalStorage()
 
 // Função para verificar e atualizar reservas concluídas automaticamente
-const atualizarReservasConcluidas = () => {
-  const reservas = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESERVAS) || '[]')
+const atualizarReservasConcluidas = async () => {
   const agora = new Date()
   const horaCheckout = 10 // 10:00
   
-  const reservasAtualizadas = reservas.map(reserva => {
+  const reservas = await db.reservas.toArray()
+  
+  for (const reserva of reservas) {
     if (reserva.status === 'pendente' && reserva.checkOut) {
       const checkOut = new Date(reserva.checkOut)
       checkOut.setHours(horaCheckout, 0, 0, 0)
       
       if (agora >= checkOut) {
-        return { ...reserva, status: 'concluida' }
+        await db.reservas.update(reserva.id, { status: 'concluida' })
       }
     }
-    return reserva
-  })
-  
-  localStorage.setItem(STORAGE_KEYS.RESERVAS, JSON.stringify(reservasAtualizadas))
+  }
 }
 
-export const getReservas = () => {
-  atualizarReservasConcluidas()
-  const data = localStorage.getItem(STORAGE_KEYS.RESERVAS)
-  return data ? JSON.parse(data) : []
+// ========== RESERVAS ==========
+export const getReservas = async () => {
+  await atualizarReservasConcluidas()
+  return await db.reservas.toArray()
 }
 
-export const saveReserva = (reserva) => {
-  const reservas = getReservas()
+export const saveReserva = async (reserva) => {
   const novaReserva = {
     ...reserva,
-    id: Date.now().toString(),
+    id: Date.now(),
     codigo: `BR${Date.now()}`,
     status: 'pendente',
     dataReserva: new Date().toISOString()
   }
-  reservas.push(novaReserva)
-  localStorage.setItem(STORAGE_KEYS.RESERVAS, JSON.stringify(reservas))
+  await db.reservas.add(novaReserva)
   return novaReserva
 }
 
-export const updateReserva = (id, updates) => {
-  const reservas = getReservas()
-  const index = reservas.findIndex(r => r.id === id)
-  if (index !== -1) {
-    reservas[index] = { ...reservas[index], ...updates }
-    localStorage.setItem(STORAGE_KEYS.RESERVAS, JSON.stringify(reservas))
-    return reservas[index]
-  }
-  return null
-}
-
-export const deleteReserva = (id) => {
-  const reservas = getReservas()
-  const filtered = reservas.filter(r => r.id !== id)
-  localStorage.setItem(STORAGE_KEYS.RESERVAS, JSON.stringify(filtered))
-}
-
-export const getQuartos = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.QUARTOS)
-  if (data) return JSON.parse(data)
+export const updateReserva = async (id, updates) => {
+  // Sanitiza dados antes de atualizar
+  const updatesSanitizados = { ...updates }
+  if (updates.nome) updatesSanitizados.nome = sanitizeString(updates.nome)
+  if (updates.email) updatesSanitizados.email = sanitizeEmail(updates.email)
+  if (updates.telefone) updatesSanitizados.telefone = sanitizePhone(updates.telefone)
+  if (updates.origem) updatesSanitizados.origem = sanitizeString(updates.origem)
+  if (updates.metodoPagamento) updatesSanitizados.metodoPagamento = sanitizeString(updates.metodoPagamento)
   
-  // Inicializar quartos padrão
-  const quartos = [
-    {
-      id: 'imperial',
-      nome: 'Suíte Brisa Imperial',
-      preco: 249,
-      descricao: 'Uma suíte elegante e aconchegante, pensada para quem busca conforto e tranquilidade.'
-    },
-    {
-      id: 'luxo',
-      nome: 'Suíte Brisa Luxo',
-      preco: 350,
-      descricao: 'Espaçosa e confortável, a Suíte Brisa Luxo oferece uma experiência premium.'
-    },
+  await db.reservas.update(id, updatesSanitizados)
+  return await db.reservas.get(id)
+}
+
+export const deleteReserva = async (id) => {
+  await db.reservas.delete(id)
+}
+
+// ========== QUARTOS ==========
+export const getQuartos = async () => {
+  const quartos = await db.quartos.toArray()
+  
+  if (quartos.length > 0) {
+    return quartos
+  }
+  
+  // Inicializar quartos padrão - sincronizados com a página Quartos.jsx
+  const quartosPadrao = [
     {
       id: 'premium',
-      nome: 'Suíte Brisa Premium',
+      nome: 'Quarto Duplo Amplo',
       preco: 450,
-      descricao: 'A opção mais exclusiva do hotel, perfeita para quem deseja viver momentos especiais.'
+      descricao: 'O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
     },
     {
       id: 'exclusiva',
-      nome: 'Suíte Brisa Exclusiva',
+      nome: 'Quarto Duplo Standard',
       preco: 550,
-      descricao: 'Combina elegância, conforto e privacidade em um só espaço.'
+      descricao: 'O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha bem equipada. O quarto duplo também disponibiliza uma churrasqueira. O quarto duplo conta com ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade dispõe de 1 cama.'
+    },
+    {
+      id: 'luxo',
+      nome: 'Quarto Deluxe',
+      preco: 400,
+      descricao: 'O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto duplo também conta com uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
+    },
+    {
+      id: 'imperial',
+      nome: 'Quarto Duplo com Banheiro Privado',
+      preco: 500,
+      descricao: 'O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
+    },
+    {
+      id: 'casa2',
+      nome: 'Casa 2',
+      preco: 300,
+      descricao: 'Casa10inn fornece acomodação em Carapina com banheira de hidromassagem. Parque Municipal de Mangue Seco fica a 8,2 km de distância. Você contará com Wi-Fi grátis e estacionamento privativo disponível no local nesta acomodação com ar-condicionado. Parque Pedra da Cebola fica a 6,5 km de distância. A casa de temporada oferece 4 quartos, TV de tela plana com canais via satélite, cozinha com geladeira e forno, máquina de lavar roupa, além de 3 banheiros com chuveiro. A casa de temporada oferece toalhas e roupa de cama. Casa10inn fica a 9,2 km de Praça dos Namorados e a 12 km de Praça do Papa. O Aeroporto de Aeroporto de Vitória - Eurico de Aguiar Salles fica a 1 km de distância.'
     }
   ]
-  localStorage.setItem(STORAGE_KEYS.QUARTOS, JSON.stringify(quartos))
-  return quartos
-}
-
-export const getDespesas = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.DESPESAS)
-  if (data) return JSON.parse(data)
   
-  const despesas = [
-    { id: '1', categoria: 'Funcionarios', quantidade: 7, total: 1300.00 },
-    { id: '2', categoria: 'Limpeza', quantidade: null, total: 3800.00 },
-    { id: '3', categoria: 'Manutenção', quantidade: null, total: 1400.80 },
-    { id: '4', categoria: 'Taxas de plataformas', quantidade: null, total: 3800.00 },
-    { id: '5', categoria: 'Gasto a parte', quantidade: null, total: 1300.00 },
-    { id: '6', categoria: 'Despesas fixa', quantidade: null, total: 3800.00 }
+  await db.quartos.bulkAdd(quartosPadrao)
+  return quartosPadrao
+}
+
+// ========== DESPESAS ==========
+export const getDespesas = async () => {
+  const despesas = await db.despesas.toArray()
+  
+  if (despesas.length > 0) {
+    return despesas
+  }
+  
+  const despesasPadrao = [
+    { id: 1, categoria: 'Funcionarios', quantidade: 7, total: 1300.00 },
+    { id: 2, categoria: 'Limpeza', quantidade: null, total: 3800.00 },
+    { id: 3, categoria: 'Manutenção', quantidade: null, total: 1400.80 },
+    { id: 4, categoria: 'Taxas de plataformas', quantidade: null, total: 3800.00 },
+    { id: 5, categoria: 'Gasto a parte', quantidade: null, total: 1300.00 },
+    { id: 6, categoria: 'Despesas fixa', quantidade: null, total: 3800.00 }
   ]
-  localStorage.setItem(STORAGE_KEYS.DESPESAS, JSON.stringify(despesas))
-  return despesas
+  
+  await db.despesas.bulkAdd(despesasPadrao)
+  return despesasPadrao
 }
 
-export const updateDespesas = (despesas) => {
-  localStorage.setItem(STORAGE_KEYS.DESPESAS, JSON.stringify(despesas))
+export const updateDespesas = async (despesas) => {
+  await db.despesas.clear()
+  await db.despesas.bulkAdd(despesas)
 }
 
-export const getFuncionarios = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.FUNCIONARIOS)
-  return data ? JSON.parse(data) : []
+// ========== FUNCIONÁRIOS ==========
+export const getFuncionarios = async () => {
+  return await db.funcionarios.toArray()
 }
 
-export const saveFuncionario = (funcionario) => {
-  const funcionarios = getFuncionarios()
+export const saveFuncionario = async (funcionario) => {
+  // Esta função está obsoleta - use createAdminUser ao invés
+  // Mantida apenas para compatibilidade
   const novo = {
     ...funcionario,
-    id: Date.now().toString()
+    id: Date.now()
   }
-  funcionarios.push(novo)
-  localStorage.setItem(STORAGE_KEYS.FUNCIONARIOS, JSON.stringify(funcionarios))
+  await db.funcionarios.add(novo)
   return novo
 }
 
-export const deleteFuncionario = (id) => {
-  const funcionarios = getFuncionarios()
-  const filtered = funcionarios.filter(f => f.id !== id)
-  localStorage.setItem(STORAGE_KEYS.FUNCIONARIOS, JSON.stringify(filtered))
+export const deleteFuncionario = async (id) => {
+  await db.funcionarios.delete(id)
 }
 
-export const setUsuarioLogado = (usuario) => {
-  localStorage.setItem(STORAGE_KEYS.USUARIO_LOGADO, JSON.stringify(usuario))
+// ========== USUÁRIOS E AUTENTICAÇÃO ==========
+// Cria ou atualiza um usuário admin
+export const createAdminUser = async (nome, email, senha) => {
+  const hashedPassword = await hashPassword(senha)
+  const usuario = {
+    id: email.toLowerCase(),
+    nome: sanitizeString(nome),
+    email: sanitizeEmail(email),
+    senha: hashedPassword,
+    role: 'admin',
+    createdAt: new Date().toISOString()
+  }
+  await db.usuarios.put(usuario)
+  return usuario
 }
 
-export const getUsuarioLogado = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.USUARIO_LOGADO)
-  return data ? JSON.parse(data) : null
+// Autentica um usuário
+export const authenticateUser = async (email, senha) => {
+  const emailSanitizado = sanitizeEmail(email)
+  if (!emailSanitizado) {
+    throw new Error('Email inválido')
+  }
+  
+  const usuario = await db.usuarios.get(emailSanitizado)
+  if (!usuario) {
+    throw new Error('Usuário não encontrado')
+  }
+  
+  const senhaValida = await comparePassword(senha, usuario.senha)
+  if (!senhaValida) {
+    throw new Error('Senha incorreta')
+  }
+  
+  // Cria sessão
+  const session = createSession(usuario.id)
+  
+  // Salva usuário logado (sem senha)
+  const { senha: _, ...usuarioSemSenha } = usuario
+  await db.usuarios.put({ id: 'current', ...usuarioSemSenha })
+  
+  return { usuario: usuarioSemSenha, session }
 }
 
-export const logout = () => {
-  localStorage.removeItem(STORAGE_KEYS.USUARIO_LOGADO)
+// Verifica se há usuário logado e sessão válida
+export const getUsuarioLogado = async () => {
+  // Verifica sessão primeiro
+  if (!validateSession()) {
+    await logout()
+    return null
+  }
+  
+  const usuario = await db.usuarios.get('current')
+  if (!usuario) return null
+  
+  const { id, ...rest } = usuario
+  return rest
 }
 
-export const getCarrinho = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.CARRINHO)
-  return data ? JSON.parse(data) : null
+// Verifica se usuário está autenticado
+export const isAuthenticated = async () => {
+  if (!validateSession()) {
+    return false
+  }
+  const usuario = await getUsuarioLogado()
+  return usuario !== null
 }
 
-export const saveCarrinho = (carrinho) => {
-  localStorage.setItem(STORAGE_KEYS.CARRINHO, JSON.stringify(carrinho))
+export const setUsuarioLogado = async (usuario) => {
+  // Função mantida para compatibilidade, mas não deve ser usada diretamente
+  // Use authenticateUser ao invés
+  await db.usuarios.put({ id: 'current', ...usuario })
 }
 
-export const clearCarrinho = () => {
-  localStorage.removeItem(STORAGE_KEYS.CARRINHO)
+export const logout = async () => {
+  clearSession()
+  await db.usuarios.delete('current')
 }
 
-export const getMetaOcupacao = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.META_OCUPACAO)
-  return data ? parseInt(data) : 100
+// Busca usuário por email
+export const getUsuarioByEmail = async (email) => {
+  const emailSanitizado = sanitizeEmail(email)
+  if (!emailSanitizado) return null
+  return await db.usuarios.get(emailSanitizado)
 }
 
-export const setMetaOcupacao = (meta) => {
-  localStorage.setItem(STORAGE_KEYS.META_OCUPACAO, meta.toString())
+// ========== CARRINHO ==========
+export const getCarrinho = async () => {
+  const carrinho = await db.carrinho.get('current')
+  return carrinho || null
 }
 
-// Funções auxiliares para cálculos
-export const getReservasPorMes = (mes, ano) => {
-  const reservas = getReservas()
+export const saveCarrinho = async (carrinho) => {
+  // Sanitiza dados do carrinho antes de salvar
+  const carrinhoSanitizado = {
+    ...carrinho,
+    nome: carrinho.nome ? sanitizeString(carrinho.nome) : carrinho.nome,
+    email: carrinho.email ? sanitizeEmail(carrinho.email) : carrinho.email,
+    telefone: carrinho.telefone ? sanitizePhone(carrinho.telefone) : carrinho.telefone,
+    quartoNome: carrinho.quartoNome ? sanitizeString(carrinho.quartoNome) : carrinho.quartoNome
+  }
+  await db.carrinho.put({ id: 'current', ...carrinhoSanitizado })
+}
+
+export const clearCarrinho = async () => {
+  await db.carrinho.delete('current')
+}
+
+// ========== CONFIGURAÇÕES ==========
+export const getMetaOcupacao = async () => {
+  const config = await db.configuracoes.get('meta_ocupacao')
+  return config ? parseInt(config.value) : 100
+}
+
+export const setMetaOcupacao = async (meta) => {
+  await db.configuracoes.put({ key: 'meta_ocupacao', value: meta.toString() })
+}
+
+// ========== FUNÇÕES AUXILIARES PARA CÁLCULOS ==========
+export const getReservasPorMes = async (mes, ano) => {
+  const reservas = await getReservas()
   return reservas.filter(r => {
     const dataReserva = new Date(r.dataReserva)
     return dataReserva.getMonth() === mes && dataReserva.getFullYear() === ano
   })
 }
 
-export const getReservasPorQuarto = (quartoId) => {
-  const reservas = getReservas()
+export const getReservasPorQuarto = async (quartoId) => {
+  const reservas = await getReservas()
   return reservas.filter(r => r.quartoId === quartoId)
 }
 
-export const getReservasPorData = (data) => {
-  const reservas = getReservas()
+export const getReservasPorData = async (data) => {
+  const reservas = await getReservas()
   const dataStr = data.toISOString().split('T')[0]
   return reservas.filter(r => {
     const checkIn = new Date(r.checkIn).toISOString().split('T')[0]
@@ -204,8 +292,8 @@ export const getReservasPorData = (data) => {
   })
 }
 
-export const isDataOcupada = (data, quartoId) => {
-  const reservas = getReservas()
+export const isDataOcupada = async (data, quartoId) => {
+  const reservas = await getReservas()
   const dataStr = data.toISOString().split('T')[0]
   return reservas.some(r => {
     if (r.quartoId !== quartoId || r.status === 'cancelada') return false
@@ -215,7 +303,7 @@ export const isDataOcupada = (data, quartoId) => {
   })
 }
 
-// Função para formatar valores monetários com separador de milhares
+// ========== FUNÇÃO PARA FORMATAR VALORES MONETÁRIOS ==========
 export const formatarMoeda = (valor) => {
   if (valor === null || valor === undefined || isNaN(valor)) return '0,00'
   const valorFormatado = parseFloat(valor).toFixed(2)
@@ -228,4 +316,3 @@ export const formatarMoeda = (valor) => {
   
   return `${inteiroFormatado},${decimal}`
 }
-
