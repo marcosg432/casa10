@@ -7,18 +7,48 @@ const ProtectedRoute = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let mounted = true
+    
     const checkAuth = async () => {
       try {
+        console.log('🔵 ProtectedRoute: Verificando autenticação...')
+        // Aguarda um pouco para garantir que o banco está pronto
+        await new Promise(resolve => setTimeout(resolve, 200))
         const authenticated = await isAuthenticated()
-        setIsAuth(authenticated)
+        console.log('🔵 ProtectedRoute: Autenticado?', authenticated)
+        if (mounted) {
+          setIsAuth(authenticated)
+          setLoading(false)
+        }
       } catch (error) {
-        console.error('Erro ao verificar autenticação:', error)
-        setIsAuth(false)
-      } finally {
-        setLoading(false)
+        console.error('🔴 ProtectedRoute: Erro ao verificar autenticação:', error)
+        if (mounted) {
+          setIsAuth(false)
+          setLoading(false)
+        }
       }
     }
+    
     checkAuth()
+    
+    // Re-verifica após um tempo maior (para casos de redirecionamento após login)
+    const timeout = setTimeout(async () => {
+      if (!mounted) return
+      try {
+        const authenticated = await isAuthenticated()
+        console.log('🔵 ProtectedRoute: Re-verificação após 1s - Autenticado?', authenticated)
+        if (mounted) {
+          setIsAuth(authenticated)
+        }
+      } catch (error) {
+        console.error('Erro ao re-verificar autenticação:', error)
+      }
+    }, 1000)
+    
+    return () => {
+      mounted = false
+      clearTimeout(timeout)
+    }
   }, [])
 
   if (loading) {
