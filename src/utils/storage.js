@@ -192,29 +192,15 @@ export const authenticateUser = async (email, senha) => {
   
   // Cria sessão
   const session = createSession(usuario.id)
-  console.log('✅ Sessão criada:', session.token.substring(0, 10) + '...')
   
   // Salva usuário logado (sem senha)
   const { senha: _, ...usuarioSemSenha } = usuario
+  
+  // Salva como 'current' para sessão atual
   await db.usuarios.put({ id: 'current', ...usuarioSemSenha })
-  console.log('✅ Usuário salvo no banco:', usuarioSemSenha.email)
   
-  // Aguarda um pouco para garantir que foi salvo
+  // Aguarda para garantir persistência
   await new Promise(resolve => setTimeout(resolve, 200))
-  
-  // Verifica se foi salvo corretamente (com retry)
-  let verificado = await db.usuarios.get('current')
-  if (!verificado) {
-    // Tenta novamente após um pequeno delay
-    await new Promise(resolve => setTimeout(resolve, 100))
-    verificado = await db.usuarios.get('current')
-  }
-  
-  if (verificado) {
-    console.log('✅ Usuário verificado no banco:', verificado.email)
-  } else {
-    console.warn('⚠️ Usuário não encontrado na verificação, mas continuando...')
-  }
   
   return { usuario: usuarioSemSenha, session }
 }
@@ -239,22 +225,12 @@ export const isAuthenticated = async () => {
   try {
     const sessionValid = validateSession()
     if (!sessionValid) {
-      console.log('🔴 Autenticação falhou: Sessão inválida')
       return false
     }
     
     const usuario = await db.usuarios.get('current')
-    const isAuth = usuario !== null && usuario !== undefined
-    
-    if (isAuth) {
-      console.log('✅ Usuário autenticado:', usuario.email)
-    } else {
-      console.log('🔴 Autenticação falhou: Usuário não encontrado no banco')
-    }
-    
-    return isAuth
+    return usuario !== null && usuario !== undefined
   } catch (error) {
-    console.error('🔴 Erro ao verificar autenticação:', error)
     return false
   }
 }

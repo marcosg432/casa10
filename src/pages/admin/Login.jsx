@@ -55,21 +55,14 @@ const Login = () => {
       }
 
       // Autentica usuário
-      const result = await authenticateUser(emailSanitizado, formData.senha)
+      await authenticateUser(emailSanitizado, formData.senha)
       recordLoginAttempt(emailSanitizado, true)
       
-      console.log('✅ Login bem-sucedido, aguardando antes de redirecionar...')
-      
-      // Aguarda mais tempo para garantir que tudo foi salvo
-      await new Promise(resolve => setTimeout(resolve, 300))
-      
-      // Verifica se a autenticação está funcionando
-      const { isAuthenticated } = await import('../../utils/storage')
-      const authCheck = await isAuthenticated()
-      console.log('✅ Verificação de autenticação após login:', authCheck)
+      // Aguarda para garantir que tudo foi salvo
+      await new Promise(resolve => setTimeout(resolve, 500))
       
       // Redireciona para admin
-      navigate('/admin', { replace: true })
+      window.location.href = '/admin'
     } catch (err) {
       recordLoginAttempt(formData.email, false)
       setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.')
