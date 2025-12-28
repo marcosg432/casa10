@@ -119,24 +119,41 @@ export const migrateFromLocalStorage = async () => {
 // Função para criar o usuário admin no banco de dados (executa apenas uma vez)
 export const createAdminUserInDB = async () => {
   try {
+    console.log('🔵 Iniciando criação do usuário admin...')
+    
     // Aguarda o banco estar pronto
-    await db.open()
+    try {
+      await db.open()
+    } catch (e) {
+      // Banco já está aberto ou erro ao abrir
+      if (!e.message.includes('already open')) {
+        throw e
+      }
+    }
+    console.log('🔵 Banco de dados aberto')
+    
+    // Aguarda um pouco para garantir que tudo está pronto
+    await new Promise(resolve => setTimeout(resolve, 100))
     
     const { hashPassword } = await import('./security.js')
     const adminEmail = 'admin@casa10.com'
     
     // Verifica se o usuário já existe
     const usuarioExistente = await db.usuarios.get(adminEmail)
+    console.log('🔵 Verificando se usuário existe:', usuarioExistente ? 'SIM' : 'NÃO')
     
     if (usuarioExistente) {
       // Usuário já existe, apenas marca como criado
       await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
       console.log('✅ Usuário admin já existe no banco de dados')
-      return
+      return { success: true, message: 'Usuário já existe' }
     }
     
     // Cria o usuário admin com senha padrão: admin123
+    console.log('🔵 Criando hash da senha...')
     const hashedPassword = await hashPassword('admin123')
+    console.log('🔵 Hash criado')
+    
     const adminUser = {
       id: adminEmail,
       nome: 'Administrador',
@@ -146,15 +163,24 @@ export const createAdminUserInDB = async () => {
       createdAt: new Date().toISOString()
     }
     
+    console.log('🔵 Salvando usuário no banco...')
     await db.usuarios.put(adminUser)
     await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
-    console.log('✅ Usuário admin criado no banco de dados: admin@casa10.com / admin123')
+    
+    // Verifica se foi salvo corretamente
+    const usuarioVerificado = await db.usuarios.get(adminEmail)
+    if (usuarioVerificado) {
+      console.log('✅ Usuário admin criado com sucesso no banco de dados!')
+      console.log('📧 Email: admin@casa10.com')
+      console.log('🔑 Senha: admin123')
+      return { success: true, message: 'Usuário criado com sucesso' }
+    } else {
+      throw new Error('Usuário não foi salvo corretamente')
+    }
   } catch (error) {
     console.error('❌ Erro ao criar usuário admin:', error)
-    // Tenta novamente após um pequeno delay
-    setTimeout(() => {
-      createAdminUserInDB().catch(console.error)
-    }, 1000)
+    console.error('❌ Detalhes do erro:', error.message, error.stack)
+    throw error
   }
 }
 
