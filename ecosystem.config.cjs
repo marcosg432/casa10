@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'casa10',
       script: 'npm',
-      args: 'run preview',
+      args: 'run preview -- --port 3002 --host',
       // O PM2 vai usar o diretório atual automaticamente
       // Se precisar especificar, descomente a linha abaixo e ajuste o caminho:
       // cwd: process.env.HOME + '/casa10',
@@ -13,7 +13,7 @@ module.exports = {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'production',
-        PORT: 3001
+        PORT: 3002
       },
       error_file: './logs/err.log',
       out_file: './logs/out.log',
