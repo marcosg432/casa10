@@ -290,3 +290,5 @@ if (typeof window !== 'undefined') {
   }, 5000) // 5 segundos após carregar a página
 }
 
+
+

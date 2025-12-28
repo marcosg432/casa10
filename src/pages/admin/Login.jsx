@@ -16,18 +16,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [csrfToken] = useState(() => generateCSRFToken())
 
-  // Cria usuário admin padrão na primeira execução
+  // Cria ou atualiza usuário admin padrão na primeira execução
   useEffect(() => {
     const initializeAdmin = async () => {
       try {
-        const { getUsuarioByEmail } = await import('../../utils/storage')
-        // Verifica se já existe um admin
-        const adminExists = await getUsuarioByEmail('admin@casa10.com')
-        if (!adminExists) {
-          // Cria admin padrão: admin@casa10.com / admin123
-          await createAdminUser('Administrador', 'admin@casa10.com', 'admin123')
-          console.log('Usuário admin padrão criado: admin@casa10.com / admin123')
-        }
+        const { getUsuarioByEmail, createAdminUser } = await import('../../utils/storage')
+        // Sempre garante que o admin padrão existe com a senha padrão
+        // Isso permite resetar a senha se necessário
+        await createAdminUser('Administrador', 'admin@casa10.com', 'admin123')
+        console.log('Usuário admin padrão garantido: admin@casa10.com / admin123')
       } catch (err) {
         console.error('Erro ao inicializar admin:', err)
       }
