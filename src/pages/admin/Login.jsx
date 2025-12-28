@@ -58,8 +58,11 @@ const Login = () => {
       await authenticateUser(emailSanitizado, formData.senha)
       recordLoginAttempt(emailSanitizado, true)
       
+      // Aguarda um pouco para garantir que a sessão foi salva
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       // Redireciona para admin
-      navigate('/admin')
+      navigate('/admin', { replace: true })
     } catch (err) {
       recordLoginAttempt(formData.email, false)
       setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.')

@@ -197,6 +197,9 @@ export const authenticateUser = async (email, senha) => {
   const { senha: _, ...usuarioSemSenha } = usuario
   await db.usuarios.put({ id: 'current', ...usuarioSemSenha })
   
+  // Aguarda um pouco para garantir que foi salvo
+  await new Promise(resolve => setTimeout(resolve, 50))
+  
   return { usuario: usuarioSemSenha, session }
 }
 
@@ -217,11 +220,18 @@ export const getUsuarioLogado = async () => {
 
 // Verifica se usuário está autenticado
 export const isAuthenticated = async () => {
-  if (!validateSession()) {
+  try {
+    const sessionValid = validateSession()
+    if (!sessionValid) {
+      return false
+    }
+    
+    const usuario = await db.usuarios.get('current')
+    return usuario !== null && usuario !== undefined
+  } catch (error) {
+    console.error('Erro ao verificar autenticação:', error)
     return false
   }
-  const usuario = await getUsuarioLogado()
-  return usuario !== null
 }
 
 export const setUsuarioLogado = async (usuario) => {
