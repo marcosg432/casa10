@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authenticateUser, createAdminUser } from '../../utils/storage'
-import { sanitizeEmail, sanitizeString, validateEmail, validatePassword, checkLoginAttempts, recordLoginAttempt, generateCSRFToken } from '../../utils/security'
+import { authenticateUser } from '../../utils/storage'
+import { sanitizeEmail, validateEmail, validatePassword, checkLoginAttempts, recordLoginAttempt, generateCSRFToken } from '../../utils/security'
 import PixelCursorTrail from '../../components/PixelCursorTrail'
 import './Login.css'
 
@@ -16,21 +16,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [csrfToken] = useState(() => generateCSRFToken())
 
-  // Cria ou atualiza usuário admin padrão na primeira execução
-  useEffect(() => {
-    const initializeAdmin = async () => {
-      try {
-        const { getUsuarioByEmail, createAdminUser } = await import('../../utils/storage')
-        // Sempre garante que o admin padrão existe com a senha padrão
-        // Isso permite resetar a senha se necessário
-        await createAdminUser('Administrador', 'admin@casa10.com', 'admin123')
-        console.log('Usuário admin padrão garantido: admin@casa10.com / admin123')
-      } catch (err) {
-        console.error('Erro ao inicializar admin:', err)
-      }
-    }
-    initializeAdmin()
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
