@@ -174,26 +174,21 @@ export const authenticateUser = async (email, senha) => {
     throw new Error('Email inválido')
   }
   
-  console.log('🔵 Autenticando usuário:', emailSanitizado)
   const usuario = await db.usuarios.get(emailSanitizado)
   
   if (!usuario) {
-    console.error('❌ Usuário não encontrado:', emailSanitizado)
     throw new Error('Usuário não encontrado')
   }
   
-  console.log('🔵 Usuário encontrado, verificando senha...')
-  console.log('🔵 Hash armazenado:', usuario.senha ? usuario.senha.substring(0, 20) + '...' : 'VAZIO')
-  
-  const senhaValida = await comparePassword(senha, usuario.senha)
-  console.log('🔵 Senha válida?', senhaValida)
-  
-  if (!senhaValida) {
-    console.error('❌ Senha incorreta para usuário:', emailSanitizado)
-    throw new Error('Senha incorreta')
+  if (!usuario.senha) {
+    throw new Error('Senha não configurada para este usuário')
   }
   
-  console.log('✅ Autenticação bem-sucedida!')
+  const senhaValida = await comparePassword(senha, usuario.senha)
+  
+  if (!senhaValida) {
+    throw new Error('Senha incorreta')
+  }
   
   // Cria sessão
   const session = createSession(usuario.id)

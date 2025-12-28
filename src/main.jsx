@@ -26,11 +26,10 @@ setTimeout(async () => {
   }
 }, 500)
 
-// Disponibiliza função global para criar/resetar admin manualmente (para debug)
+// Disponibiliza função global para criar/resetar admin manualmente
 if (typeof window !== 'undefined') {
   window.criarAdmin = async () => {
     try {
-      // Força a criação mesmo se já existir
       const db = (await import('./utils/db.js')).default
       const { hashPassword } = await import('./utils/security.js')
       const adminEmail = 'admin@casa10.com'
@@ -47,19 +46,24 @@ if (typeof window !== 'undefined') {
         createdAt: new Date().toISOString()
       }
       
+      // Usa put para garantir que todos os campos sejam salvos
       await db.usuarios.put(adminUser)
       await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
       
-      console.log('✅ Usuário admin criado/resetado!')
-      console.log('📧 Email: admin@casa10.com')
-      console.log('🔑 Senha: admin123')
-      alert('✅ Usuário admin criado/resetado!\n\nEmail: admin@casa10.com\nSenha: admin123')
+      // Verifica se foi salvo
+      await new Promise(resolve => setTimeout(resolve, 300))
+      const verificado = await db.usuarios.get(adminEmail)
+      
+      if (verificado && verificado.senha) {
+        alert('✅ Usuário admin criado/resetado com sucesso!\n\n📧 Email: admin@casa10.com\n🔑 Senha: admin123')
+      } else {
+        throw new Error('Usuário não foi salvo corretamente')
+      }
     } catch (err) {
       console.error('Erro:', err)
-      alert('Erro ao criar usuário: ' + err.message)
+      alert('❌ Erro ao criar usuário: ' + err.message)
     }
   }
-  console.log('💡 Dica: Você pode criar/resetar o usuário admin executando: criarAdmin()')
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

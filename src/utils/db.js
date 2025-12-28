@@ -116,21 +116,17 @@ export const migrateFromLocalStorage = async () => {
   }
 }
 
-// Função para criar o usuário admin no banco de dados (executa apenas uma vez)
+// Função para criar o usuário admin no banco de dados
 export const createAdminUserInDB = async () => {
   try {
-    console.log('🔵 Iniciando criação do usuário admin...')
-    
     // Aguarda o banco estar pronto
     try {
       await db.open()
     } catch (e) {
-      // Banco já está aberto ou erro ao abrir
-      if (!e.message.includes('already open')) {
+      if (!e.message?.includes('already open')) {
         throw e
       }
     }
-    console.log('🔵 Banco de dados aberto')
     
     // Aguarda um pouco para garantir que tudo está pronto
     await new Promise(resolve => setTimeout(resolve, 100))
@@ -140,53 +136,36 @@ export const createAdminUserInDB = async () => {
     
     // Verifica se o usuário já existe
     const usuarioExistente = await db.usuarios.get(adminEmail)
-    console.log('🔵 Verificando se usuário existe:', usuarioExistente ? 'SIM' : 'NÃO')
     
     // Cria o hash da senha padrão: admin123
-    console.log('🔵 Criando hash da senha...')
     const hashedPassword = await hashPassword('admin123')
-    console.log('🔵 Hash criado:', hashedPassword.substring(0, 20) + '...')
     
-    if (usuarioExistente) {
-      // Usuário já existe, atualiza a senha para garantir que seja admin123
-      console.log('🔵 Usuário existe, atualizando senha...')
-      await db.usuarios.update(adminEmail, { 
-        senha: hashedPassword,
-        nome: 'Administrador',
-        role: 'admin'
-      })
-      await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
-      console.log('✅ Senha do usuário admin atualizada para: admin123')
-      return { success: true, message: 'Senha atualizada' }
-    }
-    
-    // Cria o usuário admin com senha padrão: admin123
+    // Sempre cria/atualiza o usuário usando put (garante que todos os campos sejam salvos)
     const adminUser = {
       id: adminEmail,
       nome: 'Administrador',
       email: adminEmail,
       senha: hashedPassword,
       role: 'admin',
-      createdAt: new Date().toISOString()
+      createdAt: usuarioExistente?.createdAt || new Date().toISOString()
     }
     
-    console.log('🔵 Salvando usuário no banco...')
+    // Usa put para garantir que todos os campos sejam salvos corretamente
     await db.usuarios.put(adminUser)
     await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
     
+    // Aguarda para garantir que foi salvo
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
     // Verifica se foi salvo corretamente
     const usuarioVerificado = await db.usuarios.get(adminEmail)
-    if (usuarioVerificado) {
-      console.log('✅ Usuário admin criado com sucesso no banco de dados!')
-      console.log('📧 Email: admin@casa10.com')
-      console.log('🔑 Senha: admin123')
+    if (usuarioVerificado && usuarioVerificado.senha) {
       return { success: true, message: 'Usuário criado com sucesso' }
     } else {
       throw new Error('Usuário não foi salvo corretamente')
     }
   } catch (error) {
-    console.error('❌ Erro ao criar usuário admin:', error)
-    console.error('❌ Detalhes do erro:', error.message, error.stack)
+    console.error('Erro ao criar usuário admin:', error)
     throw error
   }
 }
