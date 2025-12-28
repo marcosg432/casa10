@@ -100,11 +100,14 @@ export const migrateFromLocalStorage = async () => {
       await db.configuracoes.put({ key: 'meta_ocupacao', value: metaLS })
     }
     
-    // Migra usuário logado
+    // Migra usuário logado (não sobrescreve usuários admin)
     const usuarioLS = localStorage.getItem('brisa_azul_usuario_logado')
     if (usuarioLS) {
       const usuario = JSON.parse(usuarioLS)
-      await db.usuarios.put({ id: 'current', ...usuario })
+      // Só migra se não for o usuário admin
+      if (usuario.email !== 'admin@casa10.com') {
+        await db.usuarios.put({ id: 'current', ...usuario })
+      }
     }
     
     // Marca como migrado
@@ -119,17 +122,8 @@ export const migrateFromLocalStorage = async () => {
 // Função para criar o usuário admin no banco de dados
 export const createAdminUserInDB = async () => {
   try {
-    // Aguarda o banco estar pronto
-    try {
-      await db.open()
-    } catch (e) {
-      if (!e.message?.includes('already open')) {
-        throw e
-      }
-    }
-    
-    // Aguarda um pouco para garantir que tudo está pronto
-    await new Promise(resolve => setTimeout(resolve, 100))
+    // Abre o banco de dados
+    await db.open()
     
     const { hashPassword } = await import('./security.js')
     const adminEmail = 'admin@casa10.com'
@@ -154,9 +148,6 @@ export const createAdminUserInDB = async () => {
     await db.usuarios.put(adminUser)
     await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
     
-    // Aguarda para garantir que foi salvo
-    await new Promise(resolve => setTimeout(resolve, 300))
-    
     // Verifica se foi salvo corretamente
     const usuarioVerificado = await db.usuarios.get(adminEmail)
     if (usuarioVerificado && usuarioVerificado.senha) {
@@ -170,8 +161,24 @@ export const createAdminUserInDB = async () => {
   }
 }
 
-// Inicializa a migração quando o módulo é carregado
-migrateFromLocalStorage()
+// Inicializa a migração e cria o usuário admin quando o módulo é carregado
+(async () => {
+  try {
+    await migrateFromLocalStorage()
+    // Aguarda um pouco para garantir que a migração terminou
+    await new Promise(resolve => setTimeout(resolve, 100))
+    // Cria o usuário admin imediatamente após a migração
+    await createAdminUserInDB()
+  } catch (err) {
+    console.error('Erro ao inicializar banco de dados:', err)
+    // Tenta criar o usuário mesmo se a migração falhar
+    try {
+      await createAdminUserInDB()
+    } catch (err2) {
+      console.error('Erro ao criar usuário admin:', err2)
+    }
+  }
+})()
 
 export default db
 

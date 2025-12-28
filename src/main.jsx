@@ -8,23 +8,8 @@ import './utils/backup.js'
 // Cria usuário admin no banco de dados
 import { createAdminUserInDB } from './utils/db.js'
 
-// Garante que o usuário admin seja criado quando o app inicia
-// Aguarda um pouco para garantir que o banco está pronto
-setTimeout(async () => {
-  try {
-    await createAdminUserInDB()
-  } catch (err) {
-    console.error('Erro ao inicializar usuário admin:', err)
-    // Tenta novamente após 2 segundos
-    setTimeout(async () => {
-      try {
-        await createAdminUserInDB()
-      } catch (err2) {
-        console.error('Erro na segunda tentativa:', err2)
-      }
-    }, 2000)
-  }
-}, 500)
+// O usuário admin é criado automaticamente no db.js após a migração
+// Não precisa fazer nada aqui, apenas garantir que o módulo seja importado
 
 // Disponibiliza função global para criar/resetar admin manualmente
 if (typeof window !== 'undefined') {

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authenticateUser } from '../../utils/storage'
 import { sanitizeEmail, validateEmail, validatePassword, checkLoginAttempts, recordLoginAttempt, generateCSRFToken } from '../../utils/security'
+import { createAdminUserInDB } from '../../utils/db'
 import PixelCursorTrail from '../../components/PixelCursorTrail'
 import './Login.css'
 
@@ -15,6 +16,18 @@ const Login = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [csrfToken] = useState(() => generateCSRFToken())
+
+  // Garante que o usuário admin existe quando a página carrega
+  useEffect(() => {
+    const ensureAdminExists = async () => {
+      try {
+        await createAdminUserInDB()
+      } catch (err) {
+        console.error('Erro ao garantir usuário admin:', err)
+      }
+    }
+    ensureAdminExists()
+  }, [])
 
 
   const handleSubmit = async (e) => {
