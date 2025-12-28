@@ -26,19 +26,40 @@ setTimeout(async () => {
   }
 }, 500)
 
-// Disponibiliza função global para criar admin manualmente (para debug)
+// Disponibiliza função global para criar/resetar admin manualmente (para debug)
 if (typeof window !== 'undefined') {
   window.criarAdmin = async () => {
     try {
-      const result = await createAdminUserInDB()
-      console.log('Resultado:', result)
-      alert('Usuário admin criado! Email: admin@casa10.com | Senha: admin123')
+      // Força a criação mesmo se já existir
+      const db = (await import('./utils/db.js')).default
+      const { hashPassword } = await import('./utils/security.js')
+      const adminEmail = 'admin@casa10.com'
+      
+      await db.open()
+      const hashedPassword = await hashPassword('admin123')
+      
+      const adminUser = {
+        id: adminEmail,
+        nome: 'Administrador',
+        email: adminEmail,
+        senha: hashedPassword,
+        role: 'admin',
+        createdAt: new Date().toISOString()
+      }
+      
+      await db.usuarios.put(adminUser)
+      await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
+      
+      console.log('✅ Usuário admin criado/resetado!')
+      console.log('📧 Email: admin@casa10.com')
+      console.log('🔑 Senha: admin123')
+      alert('✅ Usuário admin criado/resetado!\n\nEmail: admin@casa10.com\nSenha: admin123')
     } catch (err) {
       console.error('Erro:', err)
       alert('Erro ao criar usuário: ' + err.message)
     }
   }
-  console.log('💡 Dica: Você pode criar o usuário admin manualmente executando: criarAdmin()')
+  console.log('💡 Dica: Você pode criar/resetar o usuário admin executando: criarAdmin()')
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

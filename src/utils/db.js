@@ -142,18 +142,25 @@ export const createAdminUserInDB = async () => {
     const usuarioExistente = await db.usuarios.get(adminEmail)
     console.log('🔵 Verificando se usuário existe:', usuarioExistente ? 'SIM' : 'NÃO')
     
+    // Cria o hash da senha padrão: admin123
+    console.log('🔵 Criando hash da senha...')
+    const hashedPassword = await hashPassword('admin123')
+    console.log('🔵 Hash criado:', hashedPassword.substring(0, 20) + '...')
+    
     if (usuarioExistente) {
-      // Usuário já existe, apenas marca como criado
+      // Usuário já existe, atualiza a senha para garantir que seja admin123
+      console.log('🔵 Usuário existe, atualizando senha...')
+      await db.usuarios.update(adminEmail, { 
+        senha: hashedPassword,
+        nome: 'Administrador',
+        role: 'admin'
+      })
       await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
-      console.log('✅ Usuário admin já existe no banco de dados')
-      return { success: true, message: 'Usuário já existe' }
+      console.log('✅ Senha do usuário admin atualizada para: admin123')
+      return { success: true, message: 'Senha atualizada' }
     }
     
     // Cria o usuário admin com senha padrão: admin123
-    console.log('🔵 Criando hash da senha...')
-    const hashedPassword = await hashPassword('admin123')
-    console.log('🔵 Hash criado')
-    
     const adminUser = {
       id: adminEmail,
       nome: 'Administrador',
