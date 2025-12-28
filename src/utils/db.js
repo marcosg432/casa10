@@ -119,12 +119,21 @@ export const migrateFromLocalStorage = async () => {
 // Função para criar o usuário admin no banco de dados (executa apenas uma vez)
 export const createAdminUserInDB = async () => {
   try {
-    // Verifica se já criou o admin
-    const adminCriado = await db.configuracoes.get('admin_criado')
-    if (adminCriado) return
+    // Aguarda o banco estar pronto
+    await db.open()
     
     const { hashPassword } = await import('./security.js')
     const adminEmail = 'admin@casa10.com'
+    
+    // Verifica se o usuário já existe
+    const usuarioExistente = await db.usuarios.get(adminEmail)
+    
+    if (usuarioExistente) {
+      // Usuário já existe, apenas marca como criado
+      await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
+      console.log('✅ Usuário admin já existe no banco de dados')
+      return
+    }
     
     // Cria o usuário admin com senha padrão: admin123
     const hashedPassword = await hashPassword('admin123')
@@ -139,17 +148,18 @@ export const createAdminUserInDB = async () => {
     
     await db.usuarios.put(adminUser)
     await db.configuracoes.put({ key: 'admin_criado', value: 'true' })
-    console.log('Usuário admin criado no banco de dados: admin@casa10.com / admin123')
+    console.log('✅ Usuário admin criado no banco de dados: admin@casa10.com / admin123')
   } catch (error) {
-    console.error('Erro ao criar usuário admin:', error)
+    console.error('❌ Erro ao criar usuário admin:', error)
+    // Tenta novamente após um pequeno delay
+    setTimeout(() => {
+      createAdminUserInDB().catch(console.error)
+    }, 1000)
   }
 }
 
 // Inicializa a migração quando o módulo é carregado
 migrateFromLocalStorage()
-
-// Cria o usuário admin quando o módulo é carregado (apenas uma vez)
-createAdminUserInDB()
 
 export default db
 
