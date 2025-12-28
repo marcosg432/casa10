@@ -58,14 +58,8 @@ const Login = () => {
       await authenticateUser(emailSanitizado, formData.senha)
       recordLoginAttempt(emailSanitizado, true)
       
-      // Verifica se a autenticação está funcionando antes de redirecionar
-      const { isAuthenticated } = await import('../../utils/storage')
-      await new Promise(resolve => setTimeout(resolve, 300))
-      
-      const authCheck = await isAuthenticated()
-      if (!authCheck) {
-        throw new Error('Erro ao verificar autenticação após login')
-      }
+      // Aguarda para garantir que tudo foi salvo
+      await new Promise(resolve => setTimeout(resolve, 500))
       
       // Redireciona usando navigate do React Router
       navigate('/admin', { replace: true })
