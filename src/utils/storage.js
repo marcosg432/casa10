@@ -192,23 +192,17 @@ export const authenticateUser = async (email, senha) => {
   
   // Cria sessão PRIMEIRO
   const session = createSession(usuario.id)
-  console.log('✅ Sessão criada')
   
   // Salva usuário logado (sem senha)
   const { senha: _, ...usuarioSemSenha } = usuario
   
-  // Salva como 'current' para sessão atual - FORÇA múltiplas vezes para garantir
+  // Salva no IndexedDB
   const usuarioCurrent = { id: 'current', ...usuarioSemSenha }
+  await db.usuarios.put(usuarioCurrent)
   
-  console.log('🔵 Salvando usuário no banco...')
-  await db.usuarios.put(usuarioCurrent)
-  await new Promise(resolve => setTimeout(resolve, 200))
-  await db.usuarios.put(usuarioCurrent)
-  await new Promise(resolve => setTimeout(resolve, 200))
-  await db.usuarios.put(usuarioCurrent)
-  await new Promise(resolve => setTimeout(resolve, 200))
-  
-  console.log('✅ Usuário salvo no banco')
+  // TAMBÉM salva no localStorage como backup
+  localStorage.setItem('casa10_usuario_logado', JSON.stringify(usuarioSemSenha))
+  localStorage.setItem('casa10_usuario_id', usuario.id)
   
   return { usuario: usuarioSemSenha, session }
 }
@@ -236,7 +230,21 @@ export const isAuthenticated = async () => {
       return false
     }
     
-    const usuario = await db.usuarios.get('current')
+    // Tenta buscar do IndexedDB primeiro
+    let usuario = await db.usuarios.get('current')
+    
+    // Se não encontrar, tenta do localStorage (backup)
+    if (!usuario) {
+      const usuarioLS = localStorage.getItem('casa10_usuario_logado')
+      const usuarioId = localStorage.getItem('casa10_usuario_id')
+      
+      if (usuarioLS && usuarioId) {
+        usuario = JSON.parse(usuarioLS)
+        // Restaura no IndexedDB
+        await db.usuarios.put({ id: 'current', ...usuario })
+      }
+    }
+    
     return usuario !== null && usuario !== undefined
   } catch (error) {
     return false
@@ -252,6 +260,8 @@ export const setUsuarioLogado = async (usuario) => {
 export const logout = async () => {
   clearSession()
   await db.usuarios.delete('current')
+  localStorage.removeItem('casa10_usuario_logado')
+  localStorage.removeItem('casa10_usuario_id')
 }
 
 // Busca usuário por email
