@@ -55,21 +55,14 @@ const Login = () => {
       }
 
       // Garante que o usuário admin existe antes de autenticar
-      console.log('🔵 Garantindo que usuário admin existe...')
       await createAdminUserInDB()
-      await new Promise(resolve => setTimeout(resolve, 200))
       
       // Autentica usuário
-      console.log('🔵 Autenticando usuário...')
       await authenticateUser(emailSanitizado, formData.senha)
       recordLoginAttempt(emailSanitizado, true)
-      console.log('✅ Autenticação bem-sucedida!')
       
-      // Aguarda para garantir que tudo foi salvo no IndexedDB
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Redireciona - o ProtectedRoute vai verificar a autenticação
-      console.log('✅ Redirecionando para /admin...')
+      // localStorage é síncrono, então não precisa aguardar
+      // Redireciona imediatamente
       window.location.href = '/admin'
     } catch (err) {
       recordLoginAttempt(formData.email, false)

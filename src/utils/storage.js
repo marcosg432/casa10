@@ -193,16 +193,21 @@ export const authenticateUser = async (email, senha) => {
   // Cria sessão PRIMEIRO
   const session = createSession(usuario.id)
   
-  // Salva usuário logado (sem senha)
+  // Salva usuário logado (sem senha) - USA APENAS localStorage para garantir
   const { senha: _, ...usuarioSemSenha } = usuario
   
-  // Salva no IndexedDB
-  const usuarioCurrent = { id: 'current', ...usuarioSemSenha }
-  await db.usuarios.put(usuarioCurrent)
-  
-  // TAMBÉM salva no localStorage como backup
+  // Salva no localStorage (síncrono e confiável)
   localStorage.setItem('casa10_usuario_logado', JSON.stringify(usuarioSemSenha))
   localStorage.setItem('casa10_usuario_id', usuario.id)
+  localStorage.setItem('casa10_autenticado', 'true')
+  
+  // Também salva no IndexedDB (mas não depende dele)
+  try {
+    const usuarioCurrent = { id: 'current', ...usuarioSemSenha }
+    await db.usuarios.put(usuarioCurrent)
+  } catch (err) {
+    console.warn('Aviso: Não foi possível salvar no IndexedDB, mas localStorage foi salvo')
+  }
   
   return { usuario: usuarioSemSenha, session }
 }
@@ -215,37 +220,51 @@ export const getUsuarioLogado = async () => {
     return null
   }
   
-  const usuario = await db.usuarios.get('current')
-  if (!usuario) return null
+  // Busca do localStorage primeiro (mais confiável)
+  const usuarioLS = localStorage.getItem('casa10_usuario_logado')
+  if (usuarioLS) {
+    return JSON.parse(usuarioLS)
+  }
   
-  const { id, ...rest } = usuario
-  return rest
+  // Fallback: IndexedDB
+  const usuario = await db.usuarios.get('current')
+  if (usuario) {
+    const { id, ...rest } = usuario
+    // Restaura no localStorage
+    localStorage.setItem('casa10_usuario_logado', JSON.stringify(rest))
+    return rest
+  }
+  
+  return null
 }
 
 // Verifica se usuário está autenticado
 export const isAuthenticated = async () => {
   try {
+    // Verifica sessão primeiro
     const sessionValid = validateSession()
     if (!sessionValid) {
       return false
     }
     
-    // Tenta buscar do IndexedDB primeiro
-    let usuario = await db.usuarios.get('current')
+    // Verifica localStorage primeiro (mais confiável e síncrono)
+    const autenticado = localStorage.getItem('casa10_autenticado')
+    const usuarioLS = localStorage.getItem('casa10_usuario_logado')
     
-    // Se não encontrar, tenta do localStorage (backup)
-    if (!usuario) {
-      const usuarioLS = localStorage.getItem('casa10_usuario_logado')
-      const usuarioId = localStorage.getItem('casa10_usuario_id')
-      
-      if (usuarioLS && usuarioId) {
-        usuario = JSON.parse(usuarioLS)
-        // Restaura no IndexedDB
-        await db.usuarios.put({ id: 'current', ...usuario })
-      }
+    if (autenticado === 'true' && usuarioLS) {
+      return true
     }
     
-    return usuario !== null && usuario !== undefined
+    // Fallback: tenta IndexedDB
+    const usuario = await db.usuarios.get('current')
+    if (usuario) {
+      // Restaura no localStorage
+      localStorage.setItem('casa10_usuario_logado', JSON.stringify(usuario))
+      localStorage.setItem('casa10_autenticado', 'true')
+      return true
+    }
+    
+    return false
   } catch (error) {
     return false
   }
@@ -259,9 +278,14 @@ export const setUsuarioLogado = async (usuario) => {
 
 export const logout = async () => {
   clearSession()
-  await db.usuarios.delete('current')
   localStorage.removeItem('casa10_usuario_logado')
   localStorage.removeItem('casa10_usuario_id')
+  localStorage.removeItem('casa10_autenticado')
+  try {
+    await db.usuarios.delete('current')
+  } catch (err) {
+    // Ignora erro se não conseguir deletar do IndexedDB
+  }
 }
 
 // Busca usuário por email
