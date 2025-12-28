@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'brisa-azul',
+      name: 'casa10',
       script: 'npm',
       args: 'run preview',
       // O PM2 vai usar o diretório atual automaticamente
