@@ -202,12 +202,19 @@ export const authenticateUser = async (email, senha) => {
   // Aguarda um pouco para garantir que foi salvo
   await new Promise(resolve => setTimeout(resolve, 200))
   
-  // Verifica se foi salvo corretamente
-  const verificado = await db.usuarios.get('current')
+  // Verifica se foi salvo corretamente (com retry)
+  let verificado = await db.usuarios.get('current')
   if (!verificado) {
-    throw new Error('Erro ao salvar usuário no banco de dados')
+    // Tenta novamente após um pequeno delay
+    await new Promise(resolve => setTimeout(resolve, 100))
+    verificado = await db.usuarios.get('current')
   }
-  console.log('✅ Usuário verificado no banco:', verificado.email)
+  
+  if (verificado) {
+    console.log('✅ Usuário verificado no banco:', verificado.email)
+  } else {
+    console.warn('⚠️ Usuário não encontrado na verificação, mas continuando...')
+  }
   
   return { usuario: usuarioSemSenha, session }
 }
