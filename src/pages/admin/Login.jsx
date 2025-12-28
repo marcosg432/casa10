@@ -68,17 +68,9 @@ const Login = () => {
       // Aguarda para garantir que tudo foi salvo no IndexedDB
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      // Verifica se foi salvo antes de redirecionar
-      const db = (await import('../../utils/db.js')).default
-      const usuarioSalvo = await db.usuarios.get('current')
-      console.log('🔵 Usuário salvo?', usuarioSalvo ? 'SIM' : 'NÃO')
-      
-      if (usuarioSalvo) {
-        console.log('✅ Redirecionando para /admin...')
-        window.location.href = '/admin'
-      } else {
-        throw new Error('Usuário não foi salvo corretamente. Tente novamente.')
-      }
+      // Redireciona - o ProtectedRoute vai verificar a autenticação
+      console.log('✅ Redirecionando para /admin...')
+      window.location.href = '/admin'
     } catch (err) {
       recordLoginAttempt(formData.email, false)
       setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.')
