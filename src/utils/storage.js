@@ -190,17 +190,26 @@ export const authenticateUser = async (email, senha) => {
     throw new Error('Senha incorreta')
   }
   
-  // Cria sessão
+  // Cria sessão PRIMEIRO
   const session = createSession(usuario.id)
   
   // Salva usuário logado (sem senha)
   const { senha: _, ...usuarioSemSenha } = usuario
   
-  // Salva como 'current' para sessão atual
-  await db.usuarios.put({ id: 'current', ...usuarioSemSenha })
+  // Salva como 'current' para sessão atual - FORÇA múltiplas vezes
+  const usuarioCurrent = { id: 'current', ...usuarioSemSenha }
   
-  // Aguarda para garantir persistência
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await db.usuarios.put(usuarioCurrent)
+  await new Promise(resolve => setTimeout(resolve, 100))
+  await db.usuarios.put(usuarioCurrent)
+  await new Promise(resolve => setTimeout(resolve, 100))
+  await db.usuarios.put(usuarioCurrent)
+  
+  // Verifica se foi salvo
+  const verificado = await db.usuarios.get('current')
+  if (!verificado) {
+    throw new Error('Erro ao salvar sessão do usuário')
+  }
   
   return { usuario: usuarioSemSenha, session }
 }

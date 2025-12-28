@@ -8,46 +8,43 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     let mounted = true
+    let checkCount = 0
+    const maxChecks = 5
     
     const checkAuth = async () => {
+      if (!mounted) return
+      
       try {
-        console.log('🔵 ProtectedRoute: Verificando autenticação...')
-        // Aguarda um pouco para garantir que o banco está pronto
-        await new Promise(resolve => setTimeout(resolve, 200))
+        // Aguarda progressivamente mais tempo a cada tentativa
+        await new Promise(resolve => setTimeout(resolve, 200 + (checkCount * 100)))
         const authenticated = await isAuthenticated()
-        console.log('🔵 ProtectedRoute: Autenticado?', authenticated)
+        
         if (mounted) {
           setIsAuth(authenticated)
           setLoading(false)
+          
+          // Se não autenticado e ainda não excedeu tentativas, tenta novamente
+          if (!authenticated && checkCount < maxChecks) {
+            checkCount++
+            setTimeout(checkAuth, 300)
+          }
         }
       } catch (error) {
-        console.error('🔴 ProtectedRoute: Erro ao verificar autenticação:', error)
-        if (mounted) {
+        console.error('Erro ao verificar autenticação:', error)
+        if (mounted && checkCount >= maxChecks) {
           setIsAuth(false)
           setLoading(false)
+        } else if (mounted) {
+          checkCount++
+          setTimeout(checkAuth, 300)
         }
       }
     }
     
     checkAuth()
     
-    // Re-verifica após um tempo maior (para casos de redirecionamento após login)
-    const timeout = setTimeout(async () => {
-      if (!mounted) return
-      try {
-        const authenticated = await isAuthenticated()
-        console.log('🔵 ProtectedRoute: Re-verificação após 1s - Autenticado?', authenticated)
-        if (mounted) {
-          setIsAuth(authenticated)
-        }
-      } catch (error) {
-        console.error('Erro ao re-verificar autenticação:', error)
-      }
-    }, 1000)
-    
     return () => {
       mounted = false
-      clearTimeout(timeout)
     }
   }, [])
 
