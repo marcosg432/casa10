@@ -60,49 +60,89 @@ export const deleteReserva = async (id) => {
 }
 
 // ========== QUARTOS ==========
-export const getQuartos = async () => {
-  const quartos = await db.quartos.toArray()
+export const getQuartos = async (categoria = null) => {
+  let quartos = await db.quartos.toArray()
   
-  if (quartos.length > 0) {
-    return quartos
-  }
-  
-  // Inicializar quartos padrão - sincronizados com a página Quartos.jsx
+  // Se não há quartos, inicializa os padrão
+  if (quartos.length === 0) {
+    // Inicializar quartos padrão - sincronizados com a página Quartos.jsx
   const quartosPadrao = [
     {
       id: 'premium',
       nome: 'Quarto Duplo Amplo',
       preco: 450,
+      categoria: 'quartos',
       descricao: 'O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
     },
     {
       id: 'exclusiva',
       nome: 'Quarto Duplo Standard',
       preco: 550,
+      categoria: 'quartos',
       descricao: 'O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha bem equipada. O quarto duplo também disponibiliza uma churrasqueira. O quarto duplo conta com ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade dispõe de 1 cama.'
     },
     {
       id: 'luxo',
       nome: 'Quarto Deluxe',
       preco: 400,
+      categoria: 'quartos',
       descricao: 'O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto duplo também conta com uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
     },
     {
       id: 'imperial',
       nome: 'Quarto Duplo com Banheiro Privado',
       preco: 500,
+      categoria: 'quartos',
       descricao: 'O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
     },
     {
-      id: 'casa2',
-      nome: 'Casa 2',
+      id: 'casa10inn',
+      nome: 'Casa10inn',
       preco: 300,
+      categoria: 'casa',
       descricao: 'Casa10inn fornece acomodação em Carapina com banheira de hidromassagem. Parque Municipal de Mangue Seco fica a 8,2 km de distância. Você contará com Wi-Fi grátis e estacionamento privativo disponível no local nesta acomodação com ar-condicionado. Parque Pedra da Cebola fica a 6,5 km de distância. A casa de temporada oferece 4 quartos, TV de tela plana com canais via satélite, cozinha com geladeira e forno, máquina de lavar roupa, além de 3 banheiros com chuveiro. A casa de temporada oferece toalhas e roupa de cama. Casa10inn fica a 9,2 km de Praça dos Namorados e a 12 km de Praça do Papa. O Aeroporto de Aeroporto de Vitória - Eurico de Aguiar Salles fica a 1 km de distância.'
     }
   ]
   
-  await db.quartos.bulkAdd(quartosPadrao)
-  return quartosPadrao
+    await db.quartos.bulkAdd(quartosPadrao)
+    quartos = quartosPadrao
+  }
+  
+  // Filtra por categoria se especificada
+  if (categoria) {
+    quartos = quartos.filter(q => q.categoria === categoria)
+  }
+  
+  return quartos
+}
+
+// Função auxiliar para verificar disponibilidade de um quarto
+export const isQuartoDisponivel = async (quartoId, checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return true
+  
+  const reservas = await db.reservas
+    .where('quartoId').equals(quartoId)
+    .and(r => r.status !== 'cancelada')
+    .toArray()
+  
+  const checkInDate = new Date(checkIn)
+  const checkOutDate = new Date(checkOut)
+  
+  for (const reserva of reservas) {
+    const reservaCheckIn = new Date(reserva.checkIn)
+    const reservaCheckOut = new Date(reserva.checkOut)
+    
+    // Verifica se há sobreposição de datas
+    if (
+      (checkInDate >= reservaCheckIn && checkInDate < reservaCheckOut) ||
+      (checkOutDate > reservaCheckIn && checkOutDate <= reservaCheckOut) ||
+      (checkInDate <= reservaCheckIn && checkOutDate >= reservaCheckOut)
+    ) {
+      return false
+    }
+  }
+  
+  return true
 }
 
 // ========== DESPESAS ==========

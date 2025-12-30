@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { FaStar, FaHeart } from 'react-icons/fa'
+import { FaStar, FaHeart, FaHome, FaBed } from 'react-icons/fa'
 import Header from '../components/Header'
+import BookingEngine from '../components/BookingEngine'
 import { VerticalImageStack } from '../components/VerticalImageStack'
 import CircularImages from '../components/CircularImages'
 import Footer from '../components/Footer'
@@ -26,7 +27,27 @@ const Home = () => {
         <Header />
         <div className="hero-content">
           <h1 className="hero-title">Casa10</h1>
+          <p className="hero-subtitle">Sua experiência perfeita de hospedagem</p>
+          
+          {/* Categorias */}
+          <div className="hero-categories">
+            <Link to="/casa10inn" className="hero-category-card">
+              <FaHome className="hero-category-icon" />
+              <h3>Casa</h3>
+              <p>Reserve uma casa completa</p>
+            </Link>
+            <Link to="/quartos-disponiveis" className="hero-category-card">
+              <FaBed className="hero-category-icon" />
+              <h3>Quartos</h3>
+              <p>Escolha seu quarto ideal</p>
+            </Link>
+          </div>
         </div>
+      </section>
+
+      {/* Motor de Reservas */}
+      <section className="booking-engine-section">
+        <BookingEngine />
       </section>
 
       {/* sobre nós */}
@@ -43,11 +64,11 @@ const Home = () => {
             <p className="sobre-paragraph">
               Cada detalhe foi pensado para que você desfrute de dias de relaxamento, conforto e excelência, sempre acompanhado pela brisa leve que inspira o nome Brisa Império.
             </p>
-            <button className="sobre-button">saiba mais</button>
+            <Link to="/sobre" className="sobre-button">saiba mais</Link>
           </div>
           <div className="sobre-image">
             <img
-              src="/imagem/foto modelo.png"
+              src="/imagem/foto modelo.jpg"
               alt="Casa10"
               className="sobre-image-foto"
             />
@@ -55,38 +76,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* suite */}
-      <section className="quartos-section">
-        <div className="quartos-container">
-          <div className="quartos-card">
-            <div className="quartos-card-image premium"></div>
-            <h3 className="quartos-card-title">Quarto Duplo Amplo</h3>
-            <p className="quartos-card-description">
-              O quarto duplo oferece uma área de estar, uma área para refeições, além de um banheiro privativo com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha. O quarto duplo também inclui uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade possui 2 camas.
-            </p>
-            <div className="quartos-card-price">R$ 450 / Noite</div>
-            <Link to="/quarto-duplo-amplo" className="quartos-card-button">saiba mais</Link>
-          </div>
-          <div className="quartos-card">
-            <div className="quartos-card-image exclusiva"></div>
-            <h3 className="quartos-card-title">Quarto Duplo Standard</h3>
-            <p className="quartos-card-description">
-              O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha bem equipada. O quarto duplo também disponibiliza uma churrasqueira. O quarto duplo conta com ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café e TV de tela plana com serviços de streaming. A unidade dispõe de 1 cama.
-            </p>
-            <div className="quartos-card-price">R$ 550 / Noite</div>
-            <Link to="/quarto-duplo-standard" className="quartos-card-button">saiba mais</Link>
-          </div>
-          <div className="quartos-card">
-            <div className="quartos-card-image luxo"></div>
-            <h3 className="quartos-card-title">Quarto Deluxe</h3>
-            <p className="quartos-card-description">
-              O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto duplo também conta com uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. A unidade possui 2 camas.
-            </p>
-            <div className="quartos-card-price">R$ 400 / Noite</div>
-            <Link to="/quarto-deluxe" className="quartos-card-button">saiba mais</Link>
-          </div>
-        </div>
-      </section>
 
       {/* Galeria Section */}
       <section className="nova-secao-section">
@@ -95,13 +84,13 @@ const Home = () => {
           <CircularImages
             testimonials={[
               {
-                src: "/imagem/imagem 1.jpg"
+                src: "/imagem/pontos-turisticos/praia-de-camburi.jpg"
               },
               {
-                src: "/imagem/imagem 2.jpg"
+                src: "/imagem/pontos-turisticos/praia-jacaripe.jpg"
               },
               {
-                src: "/imagem/imagem 3.jpg"
+                src: "/imagem/pontos-turisticos/praia de manguinhos.png"
               }
             ]}
             autoplay={true}

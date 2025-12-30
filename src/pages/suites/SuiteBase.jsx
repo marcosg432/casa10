@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { FaSnowflake, FaLock, FaWifi, FaBriefcase, FaTv, FaChevronLeft, FaChevronRight, FaUsers, FaRulerCombined, FaDollarSign, FaUtensils, FaBed, FaFire, FaCouch, FaTshirt, FaPlug, FaBan, FaHome, FaKey, FaBolt, FaBox, FaBath, FaVideo, FaWheelchair, FaHandPaper } from 'react-icons/fa'
+import { FaSnowflake, FaLock, FaWifi, FaBriefcase, FaTv, FaChevronLeft, FaChevronRight, FaUsers, FaRulerCombined, FaDollarSign, FaUtensils, FaBed, FaFire, FaCouch, FaTshirt, FaPlug, FaBan, FaHome, FaKey, FaBolt, FaBox, FaBath, FaVideo, FaWheelchair, FaHandPaper, FaArrowLeft } from 'react-icons/fa'
 import PrivateHeader from '../../components/PrivateHeader'
+import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import Calendar from '../../components/Calendar'
 import { format } from 'date-fns'
@@ -213,9 +214,17 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
 
   return (
     <div className="suite-page">
+      <Header />
       <PrivateHeader />
       
       <div className="suite-container">
+        <button 
+          className="suite-back-button"
+          onClick={() => navigate(-1)}
+          title="Voltar"
+        >
+          <FaArrowLeft /> Voltar
+        </button>
         <div className="suite-left">
           <div className="suite-image-carousel">
             <div 
@@ -270,7 +279,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
             </div>
           )}
 
-          {/* Cards internos dos quartos (apenas para Casa 2) */}
+          {/* Cards internos dos quartos (apenas para Casa10inn) */}
           {internalRooms && (
             <div className="suite-internal-rooms">
               {internalRooms.map((room, index) => (
@@ -528,7 +537,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
           </div>
           )}
 
-          {/* Cozinha Privativa - Customizada para Casa 2 ou padrão - apenas para quartos que não têm disableBooking */}
+          {/* Cozinha Privativa - Customizada para Casa10inn ou padrão - apenas para quartos que não têm disableBooking */}
           {!disableBooking && (
             <>
               {customHouseInfo ? (
@@ -607,7 +616,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
             </>
           )}
 
-          {/* Banheiro Privativo - Apenas para Casa 2 */}
+          {/* Banheiro Privativo - Apenas para Casa10inn */}
           {!disableBooking && customHouseInfo && (
             <div className="suite-bathroom-section">
               <h3 className="suite-amenities-title">No seu banheiro privativo:</h3>

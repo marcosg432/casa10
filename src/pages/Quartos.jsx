@@ -70,12 +70,12 @@ const Quartos = () => {
             <Link to="/quarto-duplo-banheiro-privado" className="quartos-page-card-button">saiba mais</Link>
           </div>
           
-          {/* Casa 2 - Card único em linha completa com cards internos */}
-          <div className="quartos-page-card quartos-page-card-full-width quartos-page-card-casa-2">
-            <div className="casa-2-main-content">
-              <div className="quartos-page-card-image casa-2"></div>
+          {/* Casa10inn - Card único em linha completa com cards internos */}
+          <div className="quartos-page-card quartos-page-card-full-width quartos-page-card-casa10inn">
+            <div className="casa10inn-main-content">
+              <div className="quartos-page-card-image casa10inn"></div>
               <div className="quartos-page-card-icon"><FaTv /></div>
-              <h3 className="quartos-page-card-title">Casa 2</h3>
+              <h3 className="quartos-page-card-title">Casa10inn</h3>
               <p className="quartos-page-card-description">
                 Casa10inn fornece acomodação em Carapina com banheira de hidromassagem. Parque Municipal de Mangue Seco fica a 8,2 km de distância. Você contará com Wi-Fi grátis e estacionamento privativo disponível no local nesta acomodação com ar-condicionado. Parque Pedra da Cebola fica a 6,5 km de distância.
 
@@ -84,11 +84,11 @@ const Quartos = () => {
                 Casa10inn fica a 9,2 km de Praça dos Namorados e a 12 km de Praça do Papa. O Aeroporto de Aeroporto de Vitória - Eurico de Aguiar Salles fica a 1 km de distância.
               </p>
               <div className="quartos-page-card-price">R$ 300 / Noite</div>
-              <Link to="/casa-2" className="quartos-page-card-button">saiba mais</Link>
+              <Link to="/casa10inn" className="quartos-page-card-button">saiba mais</Link>
             </div>
             
-            {/* Cards internos da Casa 2 - sem botões */}
-            <div className="casa-2-internal-cards">
+            {/* Cards internos da Casa10inn - sem botões */}
+            <div className="casa10inn-internal-cards">
               <div className="quartos-page-card quartos-page-card-internal">
                 <div className="quartos-page-card-image quarto-1"></div>
                 <div className="quartos-page-card-icon"><FaTv /></div>

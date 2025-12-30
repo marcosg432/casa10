@@ -30,6 +30,31 @@ class Casa10Database extends Dexie {
       // Migração automática - não precisa fazer nada, Dexie preserva os dados
     })
     
+    // Versão 3: Adiciona categoria aos quartos
+    this.version(3).stores({
+      reservas: '++id, codigo, quartoId, checkIn, checkOut, status, dataReserva, nome, email, telefone, origem, metodoPagamento',
+      quartos: 'id, nome, preco, descricao, categoria',
+      despesas: '++id, categoria, quantidade, total',
+      funcionarios: '++id, nome, email, senha',
+      usuarios: 'id, nome, email, senha, role, createdAt',
+      carrinho: 'id, quartoId, checkIn, checkOut, preco, quantidade, nome, email, telefone',
+      configuracoes: 'key, value'
+    }).upgrade(async (tx) => {
+      // Atualiza quartos existentes para incluir categoria
+      const quartos = await tx.table('quartos').toCollection().toArray()
+      for (const quarto of quartos) {
+        if (!quarto.categoria) {
+          // Define categoria baseado no ID
+          if (quarto.id === 'casa10inn') {
+            quarto.categoria = 'casa'
+          } else {
+            quarto.categoria = 'quartos'
+          }
+          await tx.table('quartos').put(quarto)
+        }
+      }
+    })
+    
     // Inicializa as tabelas
     this.reservas = this.table('reservas')
     this.quartos = this.table('quartos')

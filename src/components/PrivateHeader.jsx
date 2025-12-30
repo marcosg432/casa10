@@ -18,7 +18,7 @@ const PrivateHeader = () => {
   useEffect(() => {
     const currentPath = location.pathname
     // Nas páginas privadas (suites), sempre marcar "Quartos" como ativo
-    const suitePages = ['/quarto-duplo-banheiro-privado', '/quarto-deluxe', '/quarto-duplo-amplo', '/quarto-duplo-standard', '/casa-2', '/quarto-1', '/quarto-2', '/quarto-3', '/quarto-4']
+    const suitePages = ['/quarto-duplo-banheiro-privado', '/quarto-deluxe', '/quarto-duplo-amplo', '/quarto-duplo-standard', '/casa10inn', '/quarto-1', '/quarto-2', '/quarto-3', '/quarto-4']
     const isSuitePage = suitePages.some(page => currentPath.startsWith(page))
     
     if (isSuitePage) {

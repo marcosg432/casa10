@@ -5,6 +5,7 @@ import { saveReserva, formatarMoeda } from '../utils/storage'
 import { sanitizeString, sanitizeEmail, sanitizePhone, validateEmail, validatePhone, validateRequired } from '../utils/security'
 import { format } from 'date-fns'
 import Calendar from '../components/Calendar'
+import Header from '../components/Header'
 import './Airbnb.css'
 
 const Airbnb = () => {
@@ -26,7 +27,7 @@ const Airbnb = () => {
     { id: 'exclusiva', nome: 'Quarto Duplo Standard', preco: 550 },
     { id: 'luxo', nome: 'Quarto Deluxe', preco: 400 },
     { id: 'imperial', nome: 'Quarto Duplo com Banheiro Privado', preco: 500 },
-    { id: 'casa2', nome: 'Casa 2', preco: 300 }
+    { id: 'casa10inn', nome: 'Casa10inn', preco: 300 }
   ]
 
   const suiteSelecionada = suites.find(s => s.id === formData.quartoId)
@@ -114,6 +115,7 @@ const Airbnb = () => {
 
   return (
     <div className="airbnb-page">
+      <Header />
       <div className="airbnb-header">
         <div className="airbnb-logo">
           <svg viewBox="0 0 1000 1000" className="airbnb-logo-svg">

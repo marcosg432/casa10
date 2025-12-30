@@ -28,6 +28,7 @@ import DatabaseViewer from './pages/admin/DatabaseViewer'
 import BackupManager from './pages/admin/BackupManager'
 import Booking from './pages/Booking'
 import Airbnb from './pages/Airbnb'
+import QuartosDisponiveis from './pages/QuartosDisponiveis'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
         <Route path="/quarto-deluxe" element={<SuiteLuxo />} />
         <Route path="/quarto-duplo-amplo" element={<SuitePremium />} />
         <Route path="/quarto-duplo-standard" element={<SuiteExclusiva />} />
-        <Route path="/casa-2" element={<Quarto1 />} />
+        <Route path="/casa10inn" element={<Quarto1 />} />
         <Route path="/quarto-1" element={<Quarto2 />} />
         <Route path="/quarto-2" element={<Quarto3 />} />
         <Route path="/quarto-3" element={<Quarto4 />} />
@@ -64,6 +65,7 @@ function App() {
         <Route path="/admin/backup" element={<ProtectedRoute><BackupManager /></ProtectedRoute>} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/airbnb" element={<Airbnb />} />
+        <Route path="/quartos-disponiveis" element={<QuartosDisponiveis />} />
       </Routes>
     </Router>
   )

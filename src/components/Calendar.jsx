@@ -51,7 +51,9 @@ const Calendar = ({ quartoId, checkIn, checkOut, onDateSelect, disabledDates = [
       if (dayStart <= checkInStart) return true
     }
     
-    if (isDataOcupada(day, quartoId)) return true
+    // Só verifica disponibilidade se tiver um quartoId específico
+    // No motor de reservas (sem quartoId), não verifica disponibilidade aqui
+    // A verificação será feita na página de listagem
     
     if (disabledDates.some(d => isSameDay(d, day))) return true
     

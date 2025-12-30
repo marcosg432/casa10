@@ -75,16 +75,9 @@ const Sobre = () => {
         </div>
       </section>
 
-      {/* Localização e Conforto Section */}
+      {/* Conforto Section */}
       <section className="localizacao-section">
         <div className="localizacao-container">
-          <div className="localizacao-card">
-            <h3 className="localizacao-card-title">Localização privilegiada</h3>
-            <p className="localizacao-card-text">
-              Estamos cercados por belas paisagens naturais e praias encantadoras, proporcionando uma experiência única de contato com a natureza e tranquilidade.
-            </p>
-            <div className="localizacao-card-image praia"></div>
-          </div>
           <div className="localizacao-card">
             <h3 className="localizacao-card-title">Conforto em cada detalhe</h3>
             <p className="localizacao-card-text">

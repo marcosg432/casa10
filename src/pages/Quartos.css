@@ -143,7 +143,7 @@
   background-image: url('/imagem/quarto-duplo-banheiro-privado.jpg');
 }
 
-.quartos-page-card-image.casa-2 {
+.quartos-page-card-image.casa10inn {
   background-image: url('/imagem/casa-2.jpg');
 }
 
@@ -171,18 +171,18 @@
   grid-column: 1 / -1;
 }
 
-.quartos-page-card-casa-2 {
+.quartos-page-card-casa10inn {
   padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.casa-2-main-content {
+.casa10inn-main-content {
   width: 100%;
 }
 
-.casa-2-internal-cards {
+.casa10inn-internal-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
@@ -195,7 +195,7 @@
 }
 
 @media (max-width: 768px) {
-  .casa-2-internal-cards {
+  .casa10inn-internal-cards {
     grid-template-columns: 1fr;
   }
 }
