@@ -79,6 +79,15 @@ const Booking = () => {
       alert('Por favor, insira um telefone válido')
       return
     }
+
+    // Validação dos limites por tipo de acomodação
+    const pessoas = parseInt(formData.pessoas)
+    const maxPessoas = formData.quartoId === 'casa10inn' ? 15 : 2
+    if (pessoas > maxPessoas) {
+      const tipoAcomodacao = formData.quartoId === 'casa10inn' ? 'Casa10inn' : 'quarto'
+      alert(`O número máximo de hóspedes para ${tipoAcomodacao} é ${maxPessoas}. Por favor, ajuste o número de pessoas.`)
+      return
+    }
     
     // Sanitiza dados
     const sanitizedData = {
@@ -182,7 +191,7 @@ const Booking = () => {
                   value={formData.pessoas}
                   onChange={handleChange}
                   min="1"
-                  max="6"
+                  max={formData.quartoId === 'casa10inn' ? "15" : "2"}
                 />
               </div>
               <button type="submit" className="booking-search-btn">Buscar</button>

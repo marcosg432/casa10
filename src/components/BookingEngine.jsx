@@ -55,18 +55,15 @@ const BookingEngine = ({ onSearch }) => {
 
   const handlePessoasChange = (e) => {
     const value = e.target.value
-    // Permite digitar qualquer número (sem limite máximo)
     if (value === '') {
       setFilters(prev => ({ ...prev, pessoas: '' }))
       return
     }
-    // Permite digitar números sem restrições
     const pessoas = parseInt(value)
-    if (!isNaN(pessoas) && pessoas >= 1) {
+    // Limita o número máximo de hóspedes a 15 (casa: 3-15, quartos: 1-2)
+    if (!isNaN(pessoas) && pessoas >= 1 && pessoas <= 15) {
       setFilters(prev => ({ ...prev, pessoas }))
     }
-    // Se estiver digitando e ainda não completou o número, não bloqueia
-    // Isso permite digitar números grandes
   }
 
   const handleSearch = () => {
@@ -80,10 +77,18 @@ const BookingEngine = ({ onSearch }) => {
       return
     }
 
-    // Validação básica
+    // Validação do número de hóspedes
     const pessoas = typeof filters.pessoas === 'number' ? filters.pessoas : parseInt(filters.pessoas)
     if (!pessoas || pessoas < 1 || isNaN(pessoas)) {
       alert('Por favor, informe o número de hóspedes')
+      return
+    }
+
+    // Validação dos limites por tipo de acomodação
+    // Quartos: máximo 2 hóspedes
+    // Casa: entre 3 e 15 hóspedes (maior que 2 e até 15)
+    if (pessoas > 15) {
+      alert('O número máximo de hóspedes é 15 para a Casa10inn. Para grupos maiores, entre em contato conosco.')
       return
     }
     
@@ -105,8 +110,8 @@ const BookingEngine = ({ onSearch }) => {
     }
     
     // Lógica baseada no número de hóspedes
-    // Se hóspedes > 2: redireciona para casa10inn
-    // Se hóspedes <= 2: redireciona para página de quartos
+    // Quartos: 1-2 hóspedes → página de quartos
+    // Casa: 3-15 hóspedes → casa10inn
     if (pessoas > 2) {
       navigate('/casa10inn')
     } else {
@@ -186,6 +191,7 @@ const BookingEngine = ({ onSearch }) => {
                 value={filters.pessoas}
                 onChange={handlePessoasChange}
                 min="1"
+                max="15"
                 placeholder="Número de pessoas"
               />
           </div>

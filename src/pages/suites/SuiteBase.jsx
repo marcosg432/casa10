@@ -231,6 +231,15 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
         return
       }
 
+      // Validação dos limites por tipo de acomodação
+      const pessoas = parseInt(formData.pessoas)
+      const maxPessoas = customHouseInfo ? 15 : 2
+      if (pessoas > maxPessoas) {
+        const tipoAcomodacao = customHouseInfo ? 'Casa10inn' : 'quarto'
+        alert(`O número máximo de hóspedes para ${tipoAcomodacao} é ${maxPessoas}. Por favor, ajuste o número de pessoas.`)
+        return
+      }
+
       // Converte datas para strings ISO
       let checkInDate = formData.checkIn
       let checkOutDate = formData.checkOut
@@ -922,6 +931,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
                     value={formData.pessoas}
                     onChange={handleChange}
                     min="1"
+                    max={customHouseInfo ? "15" : "2"}
                     required
                   />
                 </div>
