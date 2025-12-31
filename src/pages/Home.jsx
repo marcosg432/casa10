@@ -19,6 +19,8 @@ const Home = () => {
             loop
             muted
             playsInline
+            preload="metadata"
+            poster="/imagem/pontos-turisticos/praia-de-camburi-banner.jpg"
           >
             <source src="/video/video-praia-banner.mp4" type="video/mp4" />
           </video>

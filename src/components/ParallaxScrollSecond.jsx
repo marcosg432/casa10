@@ -47,6 +47,7 @@ export const ParallaxScrollSecond = ({
                 src={el}
                 className="parallax-scroll-image"
                 alt="thumbnail"
+                loading="lazy"
               />
             </motion.div>
           ))}
@@ -58,6 +59,7 @@ export const ParallaxScrollSecond = ({
                 src={el}
                 className="parallax-scroll-image"
                 alt="thumbnail"
+                loading="lazy"
               />
             </motion.div>
           ))}
@@ -76,6 +78,7 @@ export const ParallaxScrollSecond = ({
                 src={el}
                 className="parallax-scroll-image"
                 alt="thumbnail"
+                loading="lazy"
               />
             </motion.div>
           ))}

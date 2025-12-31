@@ -101,18 +101,33 @@ export const CircularImages = ({
     };
   };
 
+  // Só renderiza imagens visíveis (ativa, anterior e próxima) para melhor performance
+  const visibleIndices = useMemo(() => {
+    const indices = new Set([activeIndex]);
+    indices.add((activeIndex - 1 + testimonialsLength) % testimonialsLength);
+    indices.add((activeIndex + 1) % testimonialsLength);
+    return Array.from(indices);
+  }, [activeIndex, testimonialsLength]);
+
   return (
     <div className="carousel-wrapper">
       <div className="carousel-image-container" ref={imageContainerRef}>
-        {testimonials.map((item, index) => (
-          <img
-            key={item.src}
-            src={item.src}
-            className="carousel-image"
-            style={getImageStyle(index)}
-            alt=""
-          />
-        ))}
+        {testimonials.map((item, index) => {
+          const isVisible = visibleIndices.includes(index);
+          const style = getImageStyle(index);
+          
+          return (
+            <img
+              key={item.src}
+              src={isVisible ? item.src : undefined}
+              data-src={!isVisible ? item.src : undefined}
+              className="carousel-image"
+              style={style}
+              alt=""
+              loading={isVisible ? "eager" : "lazy"}
+            />
+          );
+        })}
       </div>
     </div>
   );

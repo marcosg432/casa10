@@ -1,0 +1,20 @@
+[33md13aa3b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Melhorias de segurança e ajustes visuais: sanitização de dados, correção de sobreposição de logo, aumento de logo no mobile, atualização de vídeo da página inicial
+[33m6b7d257[m Atualizações: substituição de Casa 2 por Casa10inn, atualização de imagens na galeria e página Sobre, adição de links do Google Maps nos pontos turísticos, melhorias na página inicial
+[33ma004456[m Melhorias: Atualizar página de Gerenciamento para listar e gerenciar usuários admin reais
+[33mb3ee08b[m Solução: Usar localStorage como fonte primária para autenticação - elimina problemas de timing do IndexedDB
+[33m45b9a0b[m Solução final: Usar localStorage como fonte primária para autenticação - síncrono e confiável
+[33m3d01334[m Solução definitiva: Usar localStorage como backup para garantir persistência do usuário logado
+[33mdeb5126[m Correção: Remover verificação que causa erro após login - confiar no salvamento múltiplo
+[33m5681680[m Adicionar logs detalhados e verificação antes de redirecionar após login
+[33m4a4c34d[m Correção: Usar window.location.href para forçar reload completo após login
+[33m50f1a9d[m Correção: Remover verificação que causa erro após login
+[33m98eabb4[m Correção: Remover verificação que causa erro ao salvar sessão do usuário
+[33m07d3bfa[m Correção crítica: Garantir que usuário seja salvo múltiplas vezes e ProtectedRoute verifique várias vezes após login
+[33m17dbab9[m Correção definitiva: Simplificar autenticação e garantir que usuário seja salvo corretamente após login
+[33m74d7a68[m Correção: Atualizar porta do preview para 3004 no vite.config.js
+[33m9c27b70[m Correção: Remover erro que impede login mesmo quando usuário é salvo corretamente
+[33md9b3e7b[m Correção: Adicionar logs de debug e aumentar delays para garantir autenticação após login
+[33m94b4ead[m Correção: Garantir que sessão seja salva antes do redirecionamento após login
+[33mc697a21[m Correção crítica: Garantir criação síncrona do usuário admin no carregamento do módulo
+[33m076fcf0[m Correção crítica: Garantir que usuário admin seja salvo corretamente no banco de dados usando put
+[33m7899027[m Correção: Sempre atualizar senha do admin e adicionar logs de debug na autenticação

@@ -125,20 +125,29 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
-  // Pré-carrega imagens próximas para melhor performance
+  // Pré-carrega apenas as 2 imagens próximas (anterior e próxima) para melhor performance no mobile
   useEffect(() => {
+    // No mobile, reduz o pré-carregamento para economizar banda
+    const isMobile = window.innerWidth <= 768
+    const preloadCount = isMobile ? 1 : 2
+    
     const preloadImages = () => {
-      const indicesToPreload = [
-        (currentImageIndex + 1) % suiteImages.length,
-        (currentImageIndex - 1 + suiteImages.length) % suiteImages.length
-      ]
+      const indicesToPreload = []
       
+      // Sempre pré-carrega a próxima imagem
+      indicesToPreload.push((currentImageIndex + 1) % suiteImages.length)
+      
+      // No desktop, também pré-carrega a anterior
+      if (!isMobile) {
+        indicesToPreload.push((currentImageIndex - 1 + suiteImages.length) % suiteImages.length)
+      }
+
       indicesToPreload.forEach(index => {
         const img = new Image()
         img.src = suiteImages[index]
       })
     }
-    
+
     preloadImages()
   }, [currentImageIndex, suiteImages])
 
@@ -1034,6 +1043,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
               src={suiteImages[modalImageIndex]} 
               alt={`Imagem ${modalImageIndex + 1} da ${suiteData.nome}`}
               className="suite-image-modal-img"
+              loading="eager"
             />
             <button 
               className="suite-image-modal-button suite-image-modal-next"

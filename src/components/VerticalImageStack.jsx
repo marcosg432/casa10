@@ -138,6 +138,7 @@ export function VerticalImageStack() {
                   alt={image.alt}
                   className="vertical-image-img"
                   draggable={false}
+                  loading={isCurrent ? "eager" : "lazy"}
                 />
 
                 {/* Bottom gradient overlay */}

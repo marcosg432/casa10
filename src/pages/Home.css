@@ -35,6 +35,14 @@
   object-fit: cover;
 }
 
+/* Otimização de vídeo para mobile */
+@media (max-width: 768px) {
+  .hero-video {
+    /* Reduz qualidade do vídeo no mobile para melhor performance */
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
 .hero-content {
   position: relative;
   z-index: 10;

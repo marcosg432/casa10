@@ -58,6 +58,7 @@ ${sanitizedData.mensagem}`
     const mensagemEncoded = encodeURIComponent(mensagemWhatsApp)
     
     // Abre WhatsApp com a mensagem formatada
+    // Número: 27 99909-5799 (formato internacional: 5527999095799)
     const whatsappUrl = `https://wa.me/5527999095799?text=${mensagemEncoded}`
     window.open(whatsappUrl, '_blank')
     
