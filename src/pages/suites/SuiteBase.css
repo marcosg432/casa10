@@ -160,6 +160,8 @@
   font-family: 'Georgia', serif;
   margin-bottom: 20px;
   font-weight: 400;
+  padding-right: 100px; /* Espaço para a logo não sobrepor o texto */
+  max-width: calc(100% - 100px); /* Garante que o texto não ultrapasse a área da logo */
 }
 
 .suite-text {
@@ -215,6 +217,8 @@
   font-size: 18px;
   color: #333;
   background: white;
+  flex: 1 1 calc(50% - 10px);
+  min-width: 0;
 }
 
 .amenity-icon {
@@ -223,6 +227,7 @@
   align-items: center;
   color: #1F6FB2;
   margin-right: 0;
+  flex-shrink: 0;
 }
 
 .suite-info-cards {
@@ -577,6 +582,26 @@
     right: 10px;
   }
 
+  .suite-description {
+    padding: 20px;
+  }
+
+  .suite-description-logo {
+    top: 15px;
+    right: 15px;
+  }
+
+  .suite-description-logo-icon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .suite-title {
+    font-size: 24px;
+    padding-right: 90px; /* Ajustado para acomodar logo maior */
+    max-width: calc(100% - 90px);
+  }
+
   .suite-description-title {
     font-size: 32px;
   }
@@ -617,6 +642,128 @@
   .form-group {
     margin-bottom: 20px;
   }
+
+  .suite-booking {
+    padding: 20px;
+  }
+
+  .suite-booking-logo {
+    position: static;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .suite-booking-logo-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .suite-booking-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .suite-booking-info {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+
+  .booking-info-item {
+    width: 100%;
+  }
+
+  .suite-form {
+    gap: 15px;
+  }
+
+  .form-dates {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .form-date-group input {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .calendar-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    margin-top: 0;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .form-total {
+    padding: 12px;
+  }
+
+  .form-total label {
+    font-size: 16px;
+  }
+
+  .form-submit-button {
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .suite-amenities-section {
+    padding: 20px;
+  }
+
+  .suite-amenities-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .suite-amenities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .amenity-item {
+    padding: 10px 15px;
+    font-size: 13px;
+    gap: 8px;
+    border-radius: 20px;
+    flex: none;
+  }
+
+  .amenity-icon {
+    font-size: 18px;
+  }
+
+  .suite-info-cards {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .suite-info-card {
+    padding: 20px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -642,12 +789,125 @@
     font-size: 14px;
   }
 
+  .suite-description {
+    padding: 15px;
+  }
+
+  .suite-description-logo {
+    top: 10px;
+    right: 10px;
+  }
+
+  .suite-description-logo-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .suite-title {
+    font-size: 20px;
+    padding-right: 80px; /* Ajustado para acomodar logo maior */
+    max-width: calc(100% - 80px);
+  }
+
   .suite-description-title {
     font-size: 28px;
   }
 
   .suite-description-text {
     font-size: 14px;
+  }
+
+  .suite-amenities-section {
+    padding: 20px;
+  }
+
+  .suite-amenities-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .suite-amenities {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .amenity-item {
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 6px;
+    border-radius: 15px;
+    flex: none;
+  }
+
+  .amenity-icon {
+    font-size: 16px;
+  }
+
+  .suite-booking {
+    padding: 15px;
+  }
+
+  .suite-booking-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .suite-booking-info {
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+
+  .suite-form {
+    gap: 12px;
+  }
+
+  .form-dates {
+    gap: 12px;
+  }
+
+  .form-row {
+    gap: 12px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .form-date-group input {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .calendar-popup {
+    max-width: 95vw;
+    max-height: 85vh;
+  }
+
+  .form-total {
+    padding: 10px;
+  }
+
+  .form-total label {
+    font-size: 14px;
+  }
+
+  .form-submit-button {
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .suite-info-cards {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .suite-info-card {
+    padding: 15px;
   }
 
   .suite-reservation {

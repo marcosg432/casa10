@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
+import { FaWhatsapp, FaEnvelope } from 'react-icons/fa'
 import './Footer.css'
 
 const Footer = () => {
-  return (
-    <footer className="home-footer">
+  const FooterContent = ({ className = '' }) => (
+    <footer className={`home-footer ${className}`}>
       <div className="home-footer-background"></div>
       <div className="home-footer-content">
         <div className="home-footer-left">
@@ -29,12 +30,25 @@ const Footer = () => {
 
         <div className="home-footer-right">
           <div className="home-footer-contact">
-            <p className="home-footer-phone">27 999095799</p>
-            <p className="home-footer-email">casa10inn@gmail.com</p>
+            <a href="https://wa.me/5527999095799" target="_blank" rel="noopener noreferrer" className="home-footer-phone">
+              <FaWhatsapp className="home-footer-icon" />
+            </a>
+            <a href="mailto:casa10inn@gmail.com" className="home-footer-email">
+              <FaEnvelope className="home-footer-icon" />
+            </a>
           </div>
         </div>
       </div>
     </footer>
+  )
+
+  return (
+    <>
+      {/* Footer Desktop - oculto no mobile */}
+      <FooterContent className="home-footer-desktop" />
+      {/* Footer Mobile - oculto no desktop */}
+      <FooterContent className="home-footer-mobile" />
+    </>
   )
 }
 

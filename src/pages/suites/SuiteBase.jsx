@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { FaSnowflake, FaLock, FaWifi, FaBriefcase, FaTv, FaChevronLeft, FaChevronRight, FaUsers, FaRulerCombined, FaDollarSign, FaUtensils, FaBed, FaFire, FaCouch, FaTshirt, FaPlug, FaBan, FaHome, FaKey, FaBolt, FaBox, FaBath, FaVideo, FaWheelchair, FaHandPaper, FaArrowLeft } from 'react-icons/fa'
 import PrivateHeader from '../../components/PrivateHeader'
-import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import Calendar from '../../components/Calendar'
 import { format } from 'date-fns'
@@ -50,7 +49,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
     nome: '',
     email: '',
     telefone: '',
-    pessoas: 0,
+    pessoas: 2,
     temCriancas: false,
     quantidadeCriancas: 0,
     idades: [],
@@ -106,14 +105,18 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
 
   const calcularTotal = () => {
     if (!formData.checkIn || !formData.checkOut) return 0
-    const diffTime = Math.abs(formData.checkOut - formData.checkIn)
+    const checkIn = formData.checkIn instanceof Date ? formData.checkIn : new Date(formData.checkIn)
+    const checkOut = formData.checkOut instanceof Date ? formData.checkOut : new Date(formData.checkOut)
+    const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     return diffDays * suiteData.preco
   }
 
   const calcularNoites = () => {
     if (!formData.checkIn || !formData.checkOut) return 0
-    const diffTime = Math.abs(formData.checkOut - formData.checkIn)
+    const checkIn = formData.checkIn instanceof Date ? formData.checkIn : new Date(formData.checkIn)
+    const checkOut = formData.checkOut instanceof Date ? formData.checkOut : new Date(formData.checkOut)
+    const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime())
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   }
 
@@ -121,6 +124,23 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
+  // Pré-carrega imagens próximas para melhor performance
+  useEffect(() => {
+    const preloadImages = () => {
+      const indicesToPreload = [
+        (currentImageIndex + 1) % suiteImages.length,
+        (currentImageIndex - 1 + suiteImages.length) % suiteImages.length
+      ]
+      
+      indicesToPreload.forEach(index => {
+        const img = new Image()
+        img.src = suiteImages[index]
+      })
+    }
+    
+    preloadImages()
+  }, [currentImageIndex, suiteImages])
 
   // Autoplay do carrossel
   useEffect(() => {
@@ -176,45 +196,91 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    if (!formData.checkIn || !formData.checkOut) {
-      alert('Por favor, selecione as datas de check-in e check-out')
-      return
-    }
+    try {
+      if (!formData.checkIn || !formData.checkOut) {
+        alert('Por favor, selecione as datas de check-in e check-out')
+        return
+      }
 
-    // Validações
-    if (!validateRequired(formData.nome)) {
-      alert('Por favor, preencha o nome')
-      return
-    }
-    if (!validateEmail(formData.email)) {
-      alert('Por favor, insira um email válido')
-      return
-    }
-    if (!validatePhone(formData.telefone)) {
-      alert('Por favor, insira um telefone válido')
-      return
-    }
+      // Validações
+      if (!validateRequired(formData.nome)) {
+        alert('Por favor, preencha o nome')
+        return
+      }
+      if (!validateEmail(formData.email)) {
+        alert('Por favor, insira um email válido')
+        return
+      }
+      if (!validatePhone(formData.telefone)) {
+        alert('Por favor, insira um telefone válido')
+        return
+      }
 
-    // Sanitiza dados antes de salvar
-    const carrinho = {
-      ...formData,
-      nome: sanitizeString(formData.nome),
-      email: sanitizeEmail(formData.email),
-      telefone: sanitizePhone(formData.telefone),
-      quartoId: suiteData.id,
-      quartoNome: suiteData.nome,
-      preco: suiteData.preco,
-      total: calcularTotal(),
-      noites: calcularNoites()
-    }
+      // Validação de pessoas
+      if (!formData.pessoas || formData.pessoas <= 0) {
+        alert('Por favor, informe o número de pessoas')
+        return
+      }
 
-    await saveCarrinho(carrinho)
-    navigate('/carrinho')
+      // Converte datas para strings ISO
+      let checkInDate = formData.checkIn
+      let checkOutDate = formData.checkOut
+      
+      if (checkInDate instanceof Date) {
+        checkInDate = checkInDate.toISOString()
+      } else if (typeof checkInDate === 'string') {
+        // Se já for string, tenta converter para Date e depois para ISO
+        const date = new Date(checkInDate)
+        if (!isNaN(date.getTime())) {
+          checkInDate = date.toISOString()
+        }
+      }
+      
+      if (checkOutDate instanceof Date) {
+        checkOutDate = checkOutDate.toISOString()
+      } else if (typeof checkOutDate === 'string') {
+        const date = new Date(checkOutDate)
+        if (!isNaN(date.getTime())) {
+          checkOutDate = date.toISOString()
+        }
+      }
+
+      const noites = calcularNoites()
+      const total = calcularTotal()
+
+      // Sanitiza dados antes de salvar
+      const carrinho = {
+        nome: sanitizeString(formData.nome),
+        email: sanitizeEmail(formData.email),
+        telefone: sanitizePhone(formData.telefone),
+        quartoId: suiteData.id,
+        quartoNome: suiteData.nome,
+        preco: suiteData.preco,
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
+        quantidade: noites,
+        pessoas: parseInt(formData.pessoas) || 2,
+        total: total,
+        noites: noites,
+        temCriancas: formData.temCriancas || false,
+        quantidadeCriancas: formData.quantidadeCriancas || 0,
+        idades: formData.idades || []
+      }
+
+      await saveCarrinho(carrinho)
+      navigate('/carrinho')
+    } catch (error) {
+      // Log do erro apenas no console em desenvolvimento (sem stack trace)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Erro ao fazer reserva:', error.message)
+      }
+      // Mensagem genérica para o usuário (não expõe detalhes técnicos)
+      alert('Ocorreu um erro ao processar sua reserva. Por favor, verifique os dados e tente novamente.')
+    }
   }
 
   return (
     <div className="suite-page">
-      <Header />
       <PrivateHeader />
       
       <div className="suite-container">
@@ -847,7 +913,6 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
                     value={formData.pessoas}
                     onChange={handleChange}
                     min="1"
-                    max={customHouseInfo ? (customHouseInfo.capacidade ? parseInt(customHouseInfo.capacidade.split(' ')[0]) : 15) : 2}
                     required
                   />
                 </div>

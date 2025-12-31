@@ -63,7 +63,11 @@ const Gerenciamento = () => {
       setShowForm(false)
       alert('Usuário admin criado com sucesso!')
     } catch (err) {
-      alert(`Erro ao criar usuário: ${err.message}`)
+      // Mensagem genérica para não expor detalhes técnicos
+      alert('Erro ao criar usuário. Por favor, verifique os dados e tente novamente.')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Erro ao criar usuário:', err.message)
+      }
     }
   }
 

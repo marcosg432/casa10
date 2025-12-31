@@ -32,7 +32,6 @@ import QuartosDisponiveis from './pages/QuartosDisponiveis'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
-  console.log('App component rendering')
   return (
     <Router>
       <Routes>

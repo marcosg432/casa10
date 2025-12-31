@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FaBars, FaTimes } from 'react-icons/fa'
 import './PrivateHeader.css'
 
 const PrivateHeader = () => {
   const location = useLocation()
   const [activeTab, setActiveTab] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const navItems = [
     { name: 'inicio', path: '/' },
@@ -35,13 +37,24 @@ const PrivateHeader = () => {
     setActiveTab(activeItem ? activeItem.name : 'inicio')
   }, [location.pathname])
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const closeMenu = () => {
+    setIsMenuOpen(false)
+  }
+
   return (
     <header className="private-header">
       <div className="private-header-container">
-        <Link to="/" className="private-logo">
+        <Link to="/" className="private-logo" onClick={closeMenu}>
           <img src="/icones/logo boa.png" className="private-logo-icon" alt="Casa10 Logo" />
         </Link>
-        <nav className="private-nav">
+        <button className="private-menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
+          {isMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <nav className={`private-nav ${isMenuOpen ? 'private-nav-open' : ''}`}>
           {navItems.map((item) => {
             const isActive = activeTab === item.name
             return (
@@ -49,6 +62,7 @@ const PrivateHeader = () => {
                 key={item.name}
                 to={item.path}
                 className={`private-nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
               >
                 <span className="private-nav-link-text">{item.name}</span>
                 {isActive && (

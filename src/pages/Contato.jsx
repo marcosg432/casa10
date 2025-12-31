@@ -44,9 +44,24 @@ const Contato = () => {
       mensagem: sanitizeText(formData.mensagem)
     }
     
-    // Aqui você enviaria os dados para o servidor
-    console.log('Dados sanitizados:', sanitizedData)
-    alert('Mensagem enviada com sucesso!')
+    // Formata mensagem para WhatsApp
+    const mensagemWhatsApp = `Olá! Recebi uma mensagem através do formulário de contato do site Casa10.
+
+*Nome:* ${sanitizedData.nome}
+*E-mail:* ${sanitizedData.email}
+*Telefone:* ${sanitizedData.telefone}
+
+*Mensagem:*
+${sanitizedData.mensagem}`
+
+    // Codifica a mensagem para URL
+    const mensagemEncoded = encodeURIComponent(mensagemWhatsApp)
+    
+    // Abre WhatsApp com a mensagem formatada
+    const whatsappUrl = `https://wa.me/5527999095799?text=${mensagemEncoded}`
+    window.open(whatsappUrl, '_blank')
+    
+    // Limpa formulário após abrir WhatsApp
     setFormData({ nome: '', email: '', telefone: '', mensagem: '' })
     setErrors({})
   }

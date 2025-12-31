@@ -594,6 +594,34 @@
     letter-spacing: 2px;
   }
 
+  /* Hero Categories - Mobile */
+  .hero-categories {
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 40px;
+    padding: 0 20px;
+  }
+
+  .hero-category-card {
+    padding: 20px 15px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .hero-category-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .hero-category-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .hero-category-card p {
+    font-size: 12px;
+  }
+
   /* Sobre Section */
   .sobre-section {
     padding: 60px 20px;

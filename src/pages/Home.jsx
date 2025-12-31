@@ -8,7 +8,6 @@ import Footer from '../components/Footer'
 import './Home.css'
 
 const Home = () => {
-  console.log('Home component rendering')
   return (
     <div className="home">
       {/* Hero Section */}
@@ -21,7 +20,7 @@ const Home = () => {
             muted
             playsInline
           >
-            <source src="/video/video mar.mp4" type="video/mp4" />
+            <source src="/video/video-praia-banner.mp4" type="video/mp4" />
           </video>
         </div>
         <Header />
@@ -84,13 +83,13 @@ const Home = () => {
           <CircularImages
             testimonials={[
               {
-                src: "/imagem/pontos-turisticos/praia-de-camburi.jpg"
+                src: "/imagem/pontos-turisticos/praia-camburi-es.webp"
               },
               {
                 src: "/imagem/pontos-turisticos/praia-jacaripe.jpg"
               },
               {
-                src: "/imagem/pontos-turisticos/praia de manguinhos.png"
+                src: "/imagem/pontos-turisticos/praia-de-manguinhos.png"
               }
             ]}
             autoplay={true}

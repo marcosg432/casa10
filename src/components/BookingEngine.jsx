@@ -54,9 +54,19 @@ const BookingEngine = ({ onSearch }) => {
   }
 
   const handlePessoasChange = (e) => {
-    const pessoas = parseInt(e.target.value) || 1
-    // Limite máximo de 15 pessoas para casa, 20 para quartos
-    setFilters(prev => ({ ...prev, pessoas: Math.max(1, Math.min(20, pessoas)) }))
+    const value = e.target.value
+    // Permite digitar qualquer número (sem limite máximo)
+    if (value === '') {
+      setFilters(prev => ({ ...prev, pessoas: '' }))
+      return
+    }
+    // Permite digitar números sem restrições
+    const pessoas = parseInt(value)
+    if (!isNaN(pessoas) && pessoas >= 1) {
+      setFilters(prev => ({ ...prev, pessoas }))
+    }
+    // Se estiver digitando e ainda não completou o número, não bloqueia
+    // Isso permite digitar números grandes
   }
 
   const handleSearch = () => {
@@ -70,29 +80,34 @@ const BookingEngine = ({ onSearch }) => {
       return
     }
 
+    // Validação básica
+    const pessoas = typeof filters.pessoas === 'number' ? filters.pessoas : parseInt(filters.pessoas)
+    if (!pessoas || pessoas < 1 || isNaN(pessoas)) {
+      alert('Por favor, informe o número de hóspedes')
+      return
+    }
+    
+    // Atualiza o estado com o valor numérico
+    const updatedFilters = { ...filters, pessoas }
+    setFilters(updatedFilters)
+    
     // Salva filtros antes de navegar
     localStorage.setItem('casa10_booking_filters', JSON.stringify({
       checkIn: filters.checkIn.toISOString(),
       checkOut: filters.checkOut.toISOString(),
-      pessoas: filters.pessoas
+      pessoas: pessoas
     }))
 
     // Se tem callback, chama ele
     if (onSearch) {
-      onSearch(filters)
-      return
-    }
-
-    // Lógica baseada no número de hóspedes
-    // Se hóspedes > 2 e <= 15: redireciona para casa10inn
-    // Se hóspedes > 15: mostra erro (limite máximo)
-    // Se hóspedes <= 2: redireciona para página de quartos
-    if (filters.pessoas > 15) {
-      alert('O número máximo de hóspedes para a casa é de 15 pessoas. Por favor, ajuste o número de hóspedes.')
+      onSearch(updatedFilters)
       return
     }
     
-    if (filters.pessoas > 2) {
+    // Lógica baseada no número de hóspedes
+    // Se hóspedes > 2: redireciona para casa10inn
+    // Se hóspedes <= 2: redireciona para página de quartos
+    if (pessoas > 2) {
       navigate('/casa10inn')
     } else {
       navigate('/quartos-disponiveis')
@@ -171,9 +186,7 @@ const BookingEngine = ({ onSearch }) => {
                 value={filters.pessoas}
                 onChange={handlePessoasChange}
                 min="1"
-                max="15"
                 placeholder="Número de pessoas"
-                title="Máximo de 15 pessoas para casa"
               />
           </div>
         </div>

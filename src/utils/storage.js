@@ -1,6 +1,6 @@
 // Sistema de armazenamento usando IndexedDB (Dexie)
 import db, { migrateFromLocalStorage } from './db.js'
-import { hashPassword, comparePassword, sanitizeEmail, sanitizeString, createSession, validateSession, clearSession } from './security.js'
+import { hashPassword, comparePassword, sanitizeEmail, sanitizeString, sanitizePhone, sanitizeNumber, sanitizeText, createSession, validateSession, clearSession, validateEmail } from './security.js'
 
 // Garante que a migração seja executada
 migrateFromLocalStorage()
@@ -31,13 +31,46 @@ export const getReservas = async () => {
 }
 
 export const saveReserva = async (reserva) => {
+  // Sanitiza todos os campos de entrada antes de salvar
   const novaReserva = {
-    ...reserva,
     id: Date.now(),
     codigo: `BR${Date.now()}`,
     status: 'pendente',
-    dataReserva: new Date().toISOString()
+    dataReserva: new Date().toISOString(),
+    // Sanitiza campos de texto
+    nome: reserva.nome ? sanitizeString(reserva.nome) : '',
+    email: reserva.email ? sanitizeEmail(reserva.email) : '',
+    telefone: reserva.telefone ? sanitizePhone(reserva.telefone) : '',
+    quartoId: reserva.quartoId ? String(reserva.quartoId) : '',
+    quartoNome: reserva.quartoNome ? sanitizeString(reserva.quartoNome) : '',
+    origem: reserva.origem ? sanitizeString(reserva.origem) : '',
+    metodoPagamento: reserva.metodoPagamento ? sanitizeString(reserva.metodoPagamento) : '',
+    // Valida e sanitiza valores numéricos
+    preco: sanitizeNumber(reserva.preco) || 0,
+    quantidade: sanitizeNumber(reserva.quantidade) || 1,
+    pessoas: sanitizeNumber(reserva.pessoas) || 2,
+    total: sanitizeNumber(reserva.total) || 0,
+    noites: sanitizeNumber(reserva.noites) || 1,
+    // Valida datas
+    checkIn: reserva.checkIn ? (reserva.checkIn instanceof Date ? reserva.checkIn.toISOString() : String(reserva.checkIn)) : null,
+    checkOut: reserva.checkOut ? (reserva.checkOut instanceof Date ? reserva.checkOut.toISOString() : String(reserva.checkOut)) : null,
+    // Campos opcionais
+    temCriancas: Boolean(reserva.temCriancas),
+    quantidadeCriancas: sanitizeNumber(reserva.quantidadeCriancas) || 0,
+    idades: Array.isArray(reserva.idades) ? reserva.idades.map(idade => sanitizeNumber(idade)).filter(idade => !isNaN(idade) && idade >= 0 && idade <= 17) : []
   }
+  
+  // Validações de segurança adicionais
+  if (!novaReserva.nome || novaReserva.nome.length < 2) {
+    throw new Error('Nome inválido')
+  }
+  if (!novaReserva.email || !validateEmail(novaReserva.email)) {
+    throw new Error('Email inválido')
+  }
+  if (novaReserva.preco < 0 || novaReserva.total < 0) {
+    throw new Error('Valores inválidos')
+  }
+  
   await db.reservas.add(novaReserva)
   return novaReserva
 }
@@ -167,8 +200,29 @@ export const getDespesas = async () => {
 }
 
 export const updateDespesas = async (despesas) => {
+  // Valida e sanitiza despesas antes de salvar
+  const despesasSanitizadas = despesas.map(despesa => ({
+    id: despesa.id || Date.now(),
+    categoria: despesa.categoria ? sanitizeString(despesa.categoria) : '',
+    quantidade: despesa.quantidade !== null && despesa.quantidade !== undefined ? sanitizeNumber(despesa.quantidade) : null,
+    total: sanitizeNumber(despesa.total) || 0
+  }))
+  
+  // Validações
+  for (const despesa of despesasSanitizadas) {
+    if (!despesa.categoria || despesa.categoria.length < 2) {
+      throw new Error('Categoria inválida')
+    }
+    if (despesa.total < 0) {
+      throw new Error('Total não pode ser negativo')
+    }
+    if (despesa.quantidade !== null && despesa.quantidade < 0) {
+      throw new Error('Quantidade não pode ser negativa')
+    }
+  }
+  
   await db.despesas.clear()
-  await db.despesas.bulkAdd(despesas)
+  await db.despesas.bulkAdd(despesasSanitizadas)
 }
 
 // ========== FUNCIONÁRIOS ==========
@@ -335,15 +389,34 @@ export const getCarrinho = async () => {
 }
 
 export const saveCarrinho = async (carrinho) => {
-  // Sanitiza dados do carrinho antes de salvar
-  const carrinhoSanitizado = {
-    ...carrinho,
-    nome: carrinho.nome ? sanitizeString(carrinho.nome) : carrinho.nome,
-    email: carrinho.email ? sanitizeEmail(carrinho.email) : carrinho.email,
-    telefone: carrinho.telefone ? sanitizePhone(carrinho.telefone) : carrinho.telefone,
-    quartoNome: carrinho.quartoNome ? sanitizeString(carrinho.quartoNome) : carrinho.quartoNome
+  try {
+    // Sanitiza dados do carrinho antes de salvar
+    const carrinhoSanitizado = {
+      id: 'current',
+      nome: carrinho.nome ? sanitizeString(carrinho.nome) : '',
+      email: carrinho.email ? sanitizeEmail(carrinho.email) : '',
+      telefone: carrinho.telefone ? sanitizePhone(carrinho.telefone) : '',
+      quartoId: carrinho.quartoId || '',
+      quartoNome: carrinho.quartoNome ? sanitizeString(carrinho.quartoNome) : '',
+      preco: carrinho.preco || 0,
+      checkIn: carrinho.checkIn || null,
+      checkOut: carrinho.checkOut || null,
+      quantidade: carrinho.quantidade || 1,
+      pessoas: carrinho.pessoas || 2,
+      total: carrinho.total || 0,
+      noites: carrinho.noites || 1,
+      temCriancas: carrinho.temCriancas || false,
+      quantidadeCriancas: carrinho.quantidadeCriancas || 0,
+      idades: carrinho.idades || []
+    }
+    await db.carrinho.put(carrinhoSanitizado)
+  } catch (error) {
+    // Log apenas em desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro ao salvar carrinho:', error.message)
+    }
+    throw error
   }
-  await db.carrinho.put({ id: 'current', ...carrinhoSanitizado })
 }
 
 export const clearCarrinho = async () => {
@@ -393,6 +466,46 @@ export const isDataOcupada = async (data, quartoId) => {
     const checkOut = new Date(r.checkOut).toISOString().split('T')[0]
     return dataStr >= checkIn && dataStr < checkOut
   })
+}
+
+// ========== MENSAGENS DE CONTATO ==========
+export const saveMensagem = async (mensagem) => {
+  // Sanitiza todos os campos antes de salvar
+  const novaMensagem = {
+    id: Date.now(),
+    dataEnvio: new Date().toISOString(),
+    lida: false,
+    nome: mensagem.nome ? sanitizeString(mensagem.nome) : '',
+    email: mensagem.email ? sanitizeEmail(mensagem.email) : '',
+    telefone: mensagem.telefone ? sanitizePhone(mensagem.telefone) : '',
+    mensagem: mensagem.mensagem ? sanitizeText(mensagem.mensagem) : ''
+  }
+  
+  // Validações básicas
+  if (!novaMensagem.nome || novaMensagem.nome.length < 2) {
+    throw new Error('Nome inválido')
+  }
+  if (!novaMensagem.email || !validateEmail(novaMensagem.email)) {
+    throw new Error('Email inválido')
+  }
+  if (!novaMensagem.mensagem || novaMensagem.mensagem.length < 10) {
+    throw new Error('Mensagem muito curta')
+  }
+  
+  await db.mensagens.add(novaMensagem)
+  return novaMensagem
+}
+
+export const getMensagens = async () => {
+  return await db.mensagens.orderBy('dataEnvio').reverse().toArray()
+}
+
+export const marcarMensagemComoLida = async (id) => {
+  await db.mensagens.update(id, { lida: true })
+}
+
+export const deleteMensagem = async (id) => {
+  await db.mensagens.delete(id)
 }
 
 // ========== FUNÇÃO PARA FORMATAR VALORES MONETÁRIOS ==========

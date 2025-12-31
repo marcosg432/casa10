@@ -59,6 +59,17 @@
   transition: all 0.3s ease;
 }
 
+.booking-engine-input[type="number"] {
+  cursor: text;
+  -moz-appearance: textfield;
+}
+
+.booking-engine-input[type="number"]::-webkit-inner-spin-button,
+.booking-engine-input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .booking-engine-input:hover {
   background: #f5f5f5;
 }
@@ -169,4 +180,5 @@
     font-size: 13px;
   }
 }
+
 

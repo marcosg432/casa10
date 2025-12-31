@@ -55,6 +55,18 @@ class Casa10Database extends Dexie {
       }
     })
     
+    // Versão 4: Adiciona tabela de mensagens de contato
+    this.version(4).stores({
+      reservas: '++id, codigo, quartoId, checkIn, checkOut, status, dataReserva, nome, email, telefone, origem, metodoPagamento',
+      quartos: 'id, nome, preco, descricao, categoria',
+      despesas: '++id, categoria, quantidade, total',
+      funcionarios: '++id, nome, email, senha',
+      usuarios: 'id, nome, email, senha, role, createdAt',
+      carrinho: 'id, quartoId, checkIn, checkOut, preco, quantidade, nome, email, telefone',
+      configuracoes: 'key, value',
+      mensagens: '++id, nome, email, telefone, mensagem, dataEnvio, lida'
+    })
+    
     // Inicializa as tabelas
     this.reservas = this.table('reservas')
     this.quartos = this.table('quartos')
@@ -63,6 +75,7 @@ class Casa10Database extends Dexie {
     this.usuarios = this.table('usuarios')
     this.carrinho = this.table('carrinho')
     this.configuracoes = this.table('configuracoes')
+    this.mensagens = this.table('mensagens')
   }
 }
 
@@ -138,9 +151,15 @@ export const migrateFromLocalStorage = async () => {
     // Marca como migrado
     await db.configuracoes.put({ key: 'migrado', value: 'true' })
     
-    console.log('Migração do localStorage para IndexedDB concluída!')
+    // Log apenas em desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Migração do localStorage para IndexedDB concluída!')
+    }
   } catch (error) {
-    console.error('Erro na migração:', error)
+    // Log apenas em desenvolvimento, sem expor detalhes sensíveis
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro na migração:', error.message)
+    }
   }
 }
 
@@ -181,7 +200,10 @@ export const createAdminUserInDB = async () => {
       throw new Error('Usuário não foi salvo corretamente')
     }
   } catch (error) {
-    console.error('Erro ao criar usuário admin:', error)
+    // Log apenas em desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro ao criar usuário admin:', error.message)
+    }
     throw error
   }
 }
@@ -195,12 +217,17 @@ export const createAdminUserInDB = async () => {
     // Cria o usuário admin imediatamente após a migração
     await createAdminUserInDB()
   } catch (err) {
-    console.error('Erro ao inicializar banco de dados:', err)
+    // Log apenas em desenvolvimento
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro ao inicializar banco de dados:', err.message)
+    }
     // Tenta criar o usuário mesmo se a migração falhar
     try {
       await createAdminUserInDB()
     } catch (err2) {
-      console.error('Erro ao criar usuário admin:', err2)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Erro ao criar usuário admin:', err2.message)
+      }
     }
   }
 })()

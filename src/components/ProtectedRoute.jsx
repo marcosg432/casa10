@@ -30,7 +30,10 @@ const ProtectedRoute = ({ children }) => {
           }
         }
       } catch (error) {
-        console.error('Erro ao verificar autenticação:', error)
+        // Log apenas em desenvolvimento
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erro ao verificar autenticação:', error.message)
+        }
         if (mounted && checkCount >= maxChecks) {
           setIsAuth(false)
           setLoading(false)

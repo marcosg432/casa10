@@ -40,7 +40,7 @@ const pontosTuristicos = [
     mapsLink: 'https://www.google.com/maps/search/Praia+de+Carapebus,+Serra+-+ES'
   },
   {
-    src: '/imagem/pontos-turisticos/praia de manguinhos.png',
+    src: '/imagem/pontos-turisticos/praia-de-manguinhos.png',
     nome: 'Praia de Manguinhos',
     mapsLink: 'https://maps.app.goo.gl/txSafaAZg37RJnzN9?g_st=iw'
   },
@@ -60,7 +60,7 @@ const pontosTuristicos = [
     mapsLink: 'https://maps.app.goo.gl/PjxtTsfpdKFcqAqy5?g_st=iw'
   },
   {
-    src: '/imagem/pontos-turisticos/praia-de-camburi.jpg',
+    src: '/imagem/pontos-turisticos/praia-camburi-es.webp',
     nome: 'Praia de Camburi',
     mapsLink: 'https://maps.app.goo.gl/5jKQtFDKD4R7kuaG8?g_st=iw'
   },

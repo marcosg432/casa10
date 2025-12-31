@@ -26,6 +26,24 @@
 
 @media (max-width: 768px) {
   .carousel-image-container {
-    height: 24rem;
+    height: 16rem;
+    max-width: 85%;
+  }
+  
+  .carousel-image {
+    border-radius: 1.2rem;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-image-container {
+    height: 14rem;
+    max-width: 80%;
+  }
+  
+  .carousel-image {
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
 }
