@@ -2,6 +2,11 @@
   width: 100%;
 }
 
+/* Ocultar logo do header apenas na página inicial */
+.home .header .logo {
+  display: none;
+}
+
 /* Hero Section */
 .hero {
   position: relative;
@@ -21,27 +26,11 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  z-index: 1;
+  background: #f0f0f0; /* Fallback caso as imagens não carreguem */
 }
 
-.hero-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  transform: translate(-50%, -50%);
-  object-fit: cover;
-}
-
-/* Otimização de vídeo para mobile */
-@media (max-width: 768px) {
-  .hero-video {
-    /* Reduz qualidade do vídeo no mobile para melhor performance */
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-}
+/* Carrossel já está estilizado no componente HeroCarousel */
 
 .hero-content {
   position: relative;
@@ -50,22 +39,37 @@
   margin-top: 100px;
 }
 
-.hero-title {
-  font-size: 120px;
-  font-weight: 400;
-  color: #1F6FB2;
-  font-family: 'Georgia', serif;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+/* Logo vazada no banner */
+.hero-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
 }
 
-.hero-subtitle {
-  font-size: 24px;
-  color: white;
-  letter-spacing: 4px;
-  font-weight: 300;
-  text-transform: uppercase;
-  margin-bottom: 50px;
+.hero-logo {
+  width: 200px;
+  height: auto;
+  opacity: 0.75;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4)) brightness(1.1);
+  transition: opacity 0.3s ease;
+  object-fit: contain;
+}
+
+.hero-logo:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .hero-logo {
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-logo {
+    width: 120px;
+  }
 }
 
 /* Hero Categories */
@@ -95,10 +99,24 @@
   background: #fff;
 }
 
-.hero-category-icon {
-  font-size: 48px;
-  color: #4a90e2;
-  margin-bottom: 15px;
+.hero-category-image-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: #f0f0f0;
+}
+
+.hero-category-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hero-category-card:hover .hero-category-image {
+  transform: scale(1.05);
 }
 
 .hero-category-card h3 {
@@ -592,14 +610,8 @@
     padding: 0 20px;
   }
 
-  .hero-title {
-    font-size: 60px;
-    margin-bottom: 15px;
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-    letter-spacing: 2px;
+  .hero-logo-container {
+    margin-bottom: 40px;
   }
 
   /* Hero Categories - Mobile */
@@ -616,9 +628,9 @@
     flex: 1;
   }
 
-  .hero-category-icon {
-    font-size: 32px;
-    margin-bottom: 10px;
+  .hero-category-image-container {
+    height: 150px;
+    margin-bottom: 15px;
   }
 
   .hero-category-card h3 {
@@ -758,13 +770,12 @@
 
 @media (max-width: 480px) {
   /* Hero Section */
-  .hero-title {
-    font-size: 48px;
+  .hero-logo-container {
+    margin-bottom: 30px;
   }
 
-  .hero-subtitle {
-    font-size: 14px;
-    letter-spacing: 1px;
+  .hero-category-image-container {
+    height: 120px;
   }
 
   /* Sobre Section */

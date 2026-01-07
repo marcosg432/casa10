@@ -1,0 +1,132 @@
+.hero-carousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Overlay escuro para reduzir destaque do banner */
+.hero-carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  will-change: opacity;
+  /* Reduzir contraste e saturação */
+  filter: contrast(0.9) saturate(0.85) blur(2px);
+}
+
+.hero-carousel-slide:first-child {
+  opacity: 1;
+  z-index: 2;
+}
+
+.hero-carousel-slide.active {
+  opacity: 1 !important;
+  z-index: 2;
+  filter: contrast(0.9) saturate(0.85) blur(2px);
+}
+
+.hero-carousel-slide.prev,
+.hero-carousel-slide.next {
+  opacity: 0;
+  z-index: 0;
+}
+
+/* Setas de navegação */
+.hero-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+  font-size: 48px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  line-height: 1;
+  padding: 0;
+}
+
+.hero-carousel-arrow:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.hero-carousel-arrow-left {
+  left: 30px;
+}
+
+.hero-carousel-arrow-right {
+  right: 30px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .hero-carousel-arrow {
+    width: 45px;
+    height: 45px;
+    font-size: 36px;
+  }
+
+  .hero-carousel-arrow-left {
+    left: 15px;
+  }
+
+  .hero-carousel-arrow-right {
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 32px;
+  }
+
+  .hero-carousel-arrow-left {
+    left: 10px;
+  }
+
+  .hero-carousel-arrow-right {
+    right: 10px;
+  }
+}
+
+

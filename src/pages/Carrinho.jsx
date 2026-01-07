@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { FaSnowflake, FaLock, FaWifi, FaBriefcase, FaTv } from 'react-icons/fa'
 import Header from '../components/Header'
 import { getCarrinho, formatarMoeda } from '../utils/storage'
+import { getQuartoById, PROPRIEDADES } from '../utils/propriedades'
 import './Carrinho.css'
 
 const Carrinho = () => {
   const navigate = useNavigate()
   const [carrinho, setCarrinho] = useState(null)
+  const [quartoInfo, setQuartoInfo] = useState(null)
 
   useEffect(() => {
     const loadCarrinho = async () => {
@@ -17,11 +19,39 @@ const Carrinho = () => {
         return
       }
       setCarrinho(carrinhoData)
+      
+      // Busca informações do quarto baseado no quartoId
+      const quarto = getQuartoById(carrinhoData.quartoId)
+      if (quarto) {
+        setQuartoInfo(quarto)
+      }
     }
     loadCarrinho()
   }, [navigate])
 
   if (!carrinho) return null
+
+  // Determina a imagem a ser exibida
+  const getQuartoImage = () => {
+    // Primeiro tenta usar a imagem salva no carrinho
+    if (carrinho.quartoImagem) {
+      return carrinho.quartoImagem
+    }
+    // Depois tenta usar as informações do quarto
+    if (quartoInfo && quartoInfo.imagens && quartoInfo.imagens.length > 0) {
+      return quartoInfo.imagens[0]
+    }
+    // Fallback para imagens padrão baseado no quartoId
+    const imageMap = {
+      'quarto-duplo-amplo': '/imagem/quarto-duplo-amplo.jpg',
+      'quarto-duplo-standard': '/imagem/quarto-duplo-standard.jpg',
+      'quarto-deluxe': '/imagem/quarto-deluxe.jpg',
+      'quarto-duplo-banheiro-privado': '/imagem/quarto-duplo-banheiro-privado.jpg',
+      'casa-de-cima': '/imagem/casa-2.jpg',
+      'casa10inn': '/imagem/casa-2.jpg'
+    }
+    return imageMap[carrinho.quartoId] || '/imagem/quarto-deluxe.jpg'
+  }
 
   return (
     <div className="carrinho-page">
@@ -29,7 +59,10 @@ const Carrinho = () => {
       <div className="carrinho-container">
         <div className="carrinho-left">
           <div className="carrinho-image">
-            <div className="carrinho-image-placeholder"></div>
+            <div 
+              className="carrinho-image-placeholder"
+              style={{ backgroundImage: `url(${getQuartoImage()})` }}
+            ></div>
           </div>
           <div className="carrinho-amenities">
             <div className="carrinho-amenity-item">
@@ -70,7 +103,7 @@ const Carrinho = () => {
             <div className="carrinho-divider"></div>
             
             <div className="carrinho-info">
-              <p className="carrinho-hotel">Pousada Casa10</p>
+              <p className="carrinho-hotel">Pousada Casa10inn</p>
               <p className="carrinho-dates">
                 {new Date(carrinho.checkIn).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} ➞ {new Date(carrinho.checkOut).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} ({carrinho.noites}) Noites
               </p>

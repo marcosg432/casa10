@@ -31,23 +31,68 @@ const Checkout = () => {
       return
     }
 
-    // Sanitiza dados antes de salvar
-    const reserva = {
-      ...carrinho,
-      nome: carrinho.nome ? sanitizeString(carrinho.nome) : carrinho.nome,
-      email: carrinho.email ? sanitizeEmail(carrinho.email) : carrinho.email,
-      telefone: carrinho.telefone ? sanitizePhone(carrinho.telefone) : carrinho.telefone,
-      metodoPagamento: sanitizeString(metodoPagamento),
-      origem: 'Site / whatsapp'
+    // Valida se os dados necessários estão presentes
+    if (!carrinho.nome || carrinho.nome.trim().length < 2) {
+      alert('Por favor, preencha o nome completo')
+      return
     }
 
-    await saveReserva(reserva)
-    await clearCarrinho()
-    setReservaConcluida(true)
+    if (!carrinho.email || !carrinho.email.includes('@')) {
+      alert('Por favor, preencha um email válido')
+      return
+    }
 
-    setTimeout(() => {
-      navigate('/')
-    }, 3000)
+    if (!carrinho.telefone || carrinho.telefone.trim().length < 8) {
+      alert('Por favor, preencha um telefone válido')
+      return
+    }
+
+    try {
+      // Sanitiza dados antes de salvar
+      const reserva = {
+        ...carrinho,
+        nome: carrinho.nome ? sanitizeString(carrinho.nome) : carrinho.nome,
+        email: carrinho.email ? sanitizeEmail(carrinho.email) : carrinho.email,
+        telefone: carrinho.telefone ? sanitizePhone(carrinho.telefone) : carrinho.telefone,
+        metodoPagamento: sanitizeString(metodoPagamento),
+        origem: 'Site / whatsapp'
+      }
+
+      // Log antes de salvar
+      console.log('💾 Tentando salvar reserva:', reserva)
+      
+      // Salva a reserva
+      const reservaSalva = await saveReserva(reserva)
+      console.log('✅ Reserva salva com sucesso:', reservaSalva)
+      
+      // Verifica se foi realmente salva
+      const { getReservas } = await import('../utils/storage')
+      const todasReservas = await getReservas()
+      const reservaEncontrada = todasReservas.find(r => r.id === reservaSalva.id)
+      
+      if (!reservaEncontrada) {
+        console.error('❌ Reserva não encontrada após salvar!')
+        throw new Error('Reserva não foi encontrada após salvar. Verifique o console para mais detalhes.')
+      }
+      
+      console.log('✅ Reserva confirmada no banco:', reservaEncontrada)
+      
+      // Limpa o carrinho apenas se a reserva foi salva com sucesso
+      await clearCarrinho()
+      
+      setReservaConcluida(true)
+
+      setTimeout(() => {
+        navigate('/')
+      }, 3000)
+    } catch (error) {
+      // Exibe mensagem de erro para o usuário
+      console.error('❌❌❌ ERRO CRÍTICO NO CHECKOUT:', error)
+      console.error('📚 Stack trace:', error.stack)
+      console.error('📝 Dados do carrinho:', carrinho)
+      console.error('📝 Dados da reserva que tentou salvar:', reserva)
+      alert(`Erro ao finalizar reserva: ${error.message || 'Erro desconhecido. Por favor, tente novamente.\n\nVerifique o console (F12) para mais detalhes.'}`)
+    }
   }
 
   if (!carrinho) return null

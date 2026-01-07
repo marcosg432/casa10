@@ -33,13 +33,13 @@ const Sobre = () => {
         <div className="sobre-page-hero-background"></div>
         <Header />
         <div className="sobre-page-hero-content">
-          <h1 className="sobre-page-hero-title">Casa10</h1>
+          <h1 className="sobre-page-hero-title">Casa10inn</h1>
         </div>
       </section>
 
       {/* Conheça Section */}
       <section className="conheca-section">
-        <h2 className="conheca-title">Conheça o Casa10</h2>
+        <h2 className="conheca-title">Conheça o Casa10inn</h2>
         <div className="conheca-images">
           <div
             className="conheca-image-left"
@@ -63,7 +63,7 @@ const Sobre = () => {
           <h2 className="historia-title">Nossa Historia</h2>
           <div className="historia-text">
             <p>
-              O Casa10 nasceu com o propósito de oferecer mais do que hospedagem: criar experiências marcantes de conforto, descanso e bem-estar. Nossa missão é combinar qualidade, serviço humanizado e um ambiente acolhedor, onde cada hóspede se sinta especial e único.
+              O Casa10inn nasceu com o propósito de oferecer mais do que hospedagem: criar experiências marcantes de conforto, descanso e bem-estar. Nossa missão é combinar qualidade, serviço humanizado e um ambiente acolhedor, onde cada hóspede se sinta especial e único.
             </p>
             <p>
               Inspirados pela tranquilidade da brisa e pela beleza natural da região, cada detalhe foi pensado para proporcionar momentos únicos. Ao longo dos anos, evoluímos nossa estrutura e serviços, sempre mantendo o compromisso com a excelência, a hospitalidade e o cuidado com nossos hóspedes.
@@ -92,7 +92,7 @@ const Sobre = () => {
       <section className="ambiente-section">
         <h2 className="ambiente-title">Ambiente ideal para relaxar</h2>
         <p className="ambiente-text">
-          O Brisa Império oferece o equilíbrio perfeito entre conforto, tranquilidade e lazer, em um ambiente cuidadosamente planejado para proporcionar descanso e bem-estar. Cada espaço foi pensado para criar uma atmosfera acolhedora e silenciosa, ideal para quem deseja desacelerar, relaxar e renovar as energias, aproveitando momentos únicos em meio a uma experiência completa de hospedagem.
+          O Casa10inn oferece o equilíbrio perfeito entre conforto, tranquilidade e lazer, em um ambiente cuidadosamente planejado para proporcionar descanso e bem-estar. Cada espaço foi pensado para criar uma atmosfera acolhedora e silenciosa, ideal para quem deseja desacelerar, relaxar e renovar as energias, aproveitando momentos únicos em meio a uma experiência completa de hospedagem.
         </p>
         <div className="ambiente-image"></div>
       </section>

@@ -45,7 +45,7 @@ const Contato = () => {
     }
     
     // Formata mensagem para WhatsApp
-    const mensagemWhatsApp = `Olá! Recebi uma mensagem através do formulário de contato do site Casa10.
+    const mensagemWhatsApp = `Olá! Recebi uma mensagem através do formulário de contato do site Casa10inn.
 
 *Nome:* ${sanitizedData.nome}
 *E-mail:* ${sanitizedData.email}

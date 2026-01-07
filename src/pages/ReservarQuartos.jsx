@@ -75,15 +75,26 @@ const ReservarQuartos = () => {
       return
     }
 
+    // Busca a imagem do quarto
+    const { getQuartoById } = await import('../utils/propriedades')
+    const quartoInfo = getQuartoById(quarto.id)
+    const quartoImagem = quartoInfo?.imagens?.[0] || quarto.imagem || '/imagem/quarto-deluxe.jpg'
+    
+    // Calcula número de noites
+    const diffTime = Math.abs(new Date(filtros.checkOut) - new Date(filtros.checkIn))
+    const noites = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
     // Salva no carrinho e redireciona para checkout
     const carrinho = {
       quartoId: quarto.id,
       quartoNome: quarto.nome,
+      quartoImagem: quartoImagem,
       checkIn: filtros.checkIn.toISOString(),
       checkOut: filtros.checkOut.toISOString(),
       preco: quarto.preco,
       total: calcularTotal(quarto.preco),
-      pessoas: filtros.pessoas
+      pessoas: filtros.pessoas,
+      noites: noites
     }
 
     localStorage.setItem('casa10_carrinho', JSON.stringify(carrinho))
@@ -153,6 +164,10 @@ const ReservarQuartos = () => {
 }
 
 export default ReservarQuartos
+
+
+
+
 
 
 

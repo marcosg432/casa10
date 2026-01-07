@@ -5,7 +5,7 @@ const Quarto4 = () => {
     id: 'quarto3',
     nome: 'Quarto 3',
     preco: 420,
-    descricao: '3 camas de solteiro'
+    descricao: 'Quarto da Casa de Cima (piso superior) com 3 camas de solteiro. Cobertores azul-claro. Capacidade: 3 pessoas. Este quarto faz parte da casa completa, que é alugada integralmente, não por quarto individual.'
   }
 
   // Imagens exclusivas do Quarto 3

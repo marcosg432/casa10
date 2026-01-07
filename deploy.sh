@@ -5,7 +5,7 @@
 
 set -e  # Parar em caso de erro
 
-echo "🚀 Iniciando deploy do Brisa Azul..."
+echo "🚀 Iniciando deploy do Casa10 Inn..."
 
 # Cores para output
 GREEN='\033[0;32m'
@@ -29,7 +29,7 @@ echo -e "${YELLOW}🏗️ Criando build de produção...${NC}"
 npm run build
 
 echo -e "${YELLOW}🔄 Reiniciando aplicação no PM2...${NC}"
-pm2 restart ecosystem.config.cjs || pm2 start ecosystem.config.cjs
+pm2 restart casa10inn || pm2 start ecosystem.config.cjs
 
 echo -e "${YELLOW}💾 Salvando configuração do PM2...${NC}"
 pm2 save
@@ -38,5 +38,5 @@ echo -e "${GREEN}✅ Deploy concluído com sucesso!${NC}"
 echo -e "${GREEN}📊 Status da aplicação:${NC}"
 pm2 status
 
-echo -e "${GREEN}📝 Para ver os logs: pm2 logs brisa-azul${NC}"
+echo -e "${GREEN}📝 Para ver os logs: pm2 logs casa10inn${NC}"
 

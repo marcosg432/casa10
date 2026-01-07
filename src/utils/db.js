@@ -82,6 +82,11 @@ class Casa10Database extends Dexie {
 // Cria uma instância do banco de dados
 const db = new Casa10Database()
 
+// Garante que o banco está aberto e pronto para uso
+db.open().catch(err => {
+  console.error('❌ Erro ao abrir banco de dados:', err)
+})
+
 // Função para migrar dados do localStorage para o banco de dados (executa apenas uma vez)
 export const migrateFromLocalStorage = async () => {
   try {
@@ -90,7 +95,7 @@ export const migrateFromLocalStorage = async () => {
     if (migrado) return
     
     // Migra reservas
-    const reservasLS = localStorage.getItem('brisa_azul_reservas')
+    const reservasLS = localStorage.getItem('casa10inn_reservas')
     if (reservasLS) {
       const reservas = JSON.parse(reservasLS)
       if (reservas.length > 0) {
@@ -99,7 +104,7 @@ export const migrateFromLocalStorage = async () => {
     }
     
     // Migra quartos
-    const quartosLS = localStorage.getItem('brisa_azul_quartos')
+    const quartosLS = localStorage.getItem('casa10inn_quartos')
     if (quartosLS) {
       const quartos = JSON.parse(quartosLS)
       if (quartos.length > 0) {
@@ -108,7 +113,7 @@ export const migrateFromLocalStorage = async () => {
     }
     
     // Migra despesas
-    const despesasLS = localStorage.getItem('brisa_azul_despesas')
+    const despesasLS = localStorage.getItem('casa10inn_despesas')
     if (despesasLS) {
       const despesas = JSON.parse(despesasLS)
       if (despesas.length > 0) {
@@ -117,7 +122,7 @@ export const migrateFromLocalStorage = async () => {
     }
     
     // Migra funcionários
-    const funcionariosLS = localStorage.getItem('brisa_azul_funcionarios')
+    const funcionariosLS = localStorage.getItem('casa10inn_funcionarios')
     if (funcionariosLS) {
       const funcionarios = JSON.parse(funcionariosLS)
       if (funcionarios.length > 0) {
@@ -126,20 +131,20 @@ export const migrateFromLocalStorage = async () => {
     }
     
     // Migra carrinho
-    const carrinhoLS = localStorage.getItem('brisa_azul_carrinho')
+    const carrinhoLS = localStorage.getItem('casa10inn_carrinho')
     if (carrinhoLS) {
       const carrinho = JSON.parse(carrinhoLS)
       await db.carrinho.put({ id: 'current', ...carrinho })
     }
     
     // Migra meta de ocupação
-    const metaLS = localStorage.getItem('brisa_azul_meta_ocupacao')
+    const metaLS = localStorage.getItem('casa10inn_meta_ocupacao')
     if (metaLS) {
       await db.configuracoes.put({ key: 'meta_ocupacao', value: metaLS })
     }
     
     // Migra usuário logado (não sobrescreve usuários admin)
-    const usuarioLS = localStorage.getItem('brisa_azul_usuario_logado')
+    const usuarioLS = localStorage.getItem('casa10inn_usuario_logado')
     if (usuarioLS) {
       const usuario = JSON.parse(usuarioLS)
       // Só migra se não for o usuário admin

@@ -5,7 +5,7 @@ const Quarto1 = () => {
     id: 'casa10inn',
     nome: 'Casa10inn',
     preco: 300,
-    descricao: 'Casa10inn fornece acomodação em Carapina com banheira de hidromassagem. Parque Municipal de Mangue Seco fica a 8,2 km de distância. Você contará com Wi-Fi grátis e estacionamento privativo disponível no local nesta acomodação com ar-condicionado. Parque Pedra da Cebola fica a 6,5 km de distância.\n\nA casa de temporada oferece 4 quartos, TV de tela plana com canais via satélite, cozinha com geladeira e forno, máquina de lavar roupa, além de 3 banheiros com chuveiro. A casa de temporada oferece toalhas e roupa de cama.\n\nCasa10inn fica a 9,2 km de Praça dos Namorados e a 12 km de Praça do Papa. O Aeroporto de Aeroporto de Vitória - Eurico de Aguiar Salles fica a 1 km de distância.'
+    descricao: 'Casa de Cima (Casa da Banheira) - Casa completa para aluguer integral. Piso superior com cobertores azul-claro. Esta é uma casa inteira, não é hostel e não é alugada por quarto individual. A casa oferece 4 quartos (1 com 3 camas, 1 com 5 camas, 1 com 3 camas, 1 suite com 3 camas incluindo 1 cama de casal), TV de tela plana com canais via satélite, cozinha com geladeira e forno, máquina de lavar roupa, além de 3 banheiros com chuveiro e banheira de hidromassagem. Capacidade total: 15 pessoas. Todos os quartos possuem cobertores azul-claro.'
   }
 
   // Imagens exclusivas da Casa10inn
@@ -15,27 +15,27 @@ const Quarto1 = () => {
 
   const internalRooms = [
     {
-      image: '/imagem/quarto-1.jpg',
+      image: '/imagem/quarto-2-novo.jpg',
       title: 'Quarto 1',
-      description: '3 camas de solteiro',
+      description: '3 camas de solteiro • Capacidade: 3 pessoas • Cobertores Azul-Claro',
       link: '/quarto-1'
     },
     {
-      image: '/imagem/quarto-2-novo.jpg',
+      image: '/imagem/quarto-1.jpg',
       title: 'Quarto 2',
-      description: '5 camas de solteiros',
+      description: '5 camas de solteiro • Capacidade: 5 pessoas • Cobertores Azul-Claro',
       link: '/quarto-2'
     },
     {
       image: '/imagem/quarto-3.jpg',
       title: 'Quarto 3',
-      description: '3 camas de solteiro',
+      description: '3 camas de solteiro • Capacidade: 3 pessoas • Cobertores Azul-Claro',
       link: '/quarto-3'
     },
     {
       image: '/imagem/quarto-4.jpg',
-      title: 'Quarto 4',
-      description: '4 camas de solteiro',
+      title: 'Suite',
+      description: '3 camas (incluindo 1 cama de casal) • Capacidade: 4 pessoas • Cobertores Azul-Claro',
       link: '/quarto-4'
     }
   ]
@@ -43,7 +43,9 @@ const Quarto1 = () => {
   const customHouseInfo = {
     area: '180 m²',
     banheiros: '3',
-    capacidade: '15 pessoas'
+    capacidade: '15 pessoas',
+    tipo: 'Casa Inteira',
+    identificacao: 'Cobertores Azul-Claro'
   }
 
   return <SuiteBase suiteData={suiteData} images={casa10innImages} internalRooms={internalRooms} customHouseInfo={customHouseInfo} />

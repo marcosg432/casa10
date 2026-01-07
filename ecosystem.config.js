@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'brisa-azul',
+    name: 'casa10inn',
     script: 'npm',
     args: 'run preview -- --port 3000 --host',
     cwd: process.cwd(),

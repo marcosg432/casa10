@@ -5,7 +5,7 @@ import PrivateHeader from '../../components/PrivateHeader'
 import Footer from '../../components/Footer'
 import Calendar from '../../components/Calendar'
 import { format } from 'date-fns'
-import { saveCarrinho, formatarMoeda } from '../../utils/storage'
+import { saveCarrinho, formatarMoeda, getReservasPorQuarto } from '../../utils/storage'
 import { sanitizeString, sanitizeEmail, sanitizePhone, validateEmail, validatePhone, validateRequired } from '../../utils/security'
 import './SuiteBase.css'
 
@@ -13,6 +13,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
   const navigate = useNavigate()
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [showCalendar, setShowCalendar] = useState({ checkIn: false, checkOut: false })
+  const [disabledDates, setDisabledDates] = useState([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showImageModal, setShowImageModal] = useState(false)
   const [modalImageIndex, setModalImageIndex] = useState(0)
@@ -56,6 +57,50 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
     checkIn: null,
     checkOut: null
   })
+
+  // Carrega datas indisponíveis (reservas já existentes) para este quarto específico
+  useEffect(() => {
+    const carregarDatasIndisponiveis = async () => {
+      try {
+        const reservas = await getReservasPorQuarto(suiteData.id)
+        const hoje = new Date()
+        const hojeSemHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate())
+
+        const datas = []
+
+        reservas.forEach((reserva) => {
+          // Ignora reservas canceladas
+          if (reserva.status === 'cancelada') return
+          if (!reserva.checkIn || !reserva.checkOut) return
+
+          const inicio = new Date(reserva.checkIn)
+          const fim = new Date(reserva.checkOut)
+
+          // Garante datas sem hora
+          let dia = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate())
+          const limite = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate())
+
+          // Percorre todos os dias da reserva (check-in incluso, check-out exclusivo)
+          while (dia < limite) {
+            // Ignora dias no passado (o calendário já bloqueia, mas evita lista gigante)
+            if (dia >= hojeSemHora) {
+              datas.push(new Date(dia))
+            }
+            dia.setDate(dia.getDate() + 1)
+          }
+        })
+
+        setDisabledDates(datas)
+      } catch (error) {
+        // Apenas log em desenvolvimento
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Erro ao carregar datas indisponíveis para o quarto:', suiteData.id, error)
+        }
+      }
+    }
+
+    carregarDatasIndisponiveis()
+  }, [suiteData.id])
 
   const handleDateSelect = (checkIn, checkOut) => {
     setFormData({
@@ -266,6 +311,10 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
       const noites = calcularNoites()
       const total = calcularTotal()
 
+      // Determina a imagem do quarto
+      const quartoImage = images && images.length > 0 ? images[0] : 
+        (suiteImages && suiteImages.length > 0 ? suiteImages[0] : '/imagem/quarto-deluxe.jpg')
+
       // Sanitiza dados antes de salvar
       const carrinho = {
         nome: sanitizeString(formData.nome),
@@ -273,6 +322,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
         telefone: sanitizePhone(formData.telefone),
         quartoId: suiteData.id,
         quartoNome: suiteData.nome,
+        quartoImagem: quartoImage,
         preco: suiteData.preco,
         checkIn: checkInDate,
         checkOut: checkOutDate,
@@ -861,6 +911,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
                         checkIn={formData.checkIn}
                         checkOut={formData.checkOut}
                         onDateSelect={handleDateSelect}
+                        disabledDates={disabledDates}
                         selectingCheckIn={true}
                       />
                     </div>
@@ -882,6 +933,7 @@ const SuiteBase = ({ suiteData, images, customInfo, disableBooking = false, inte
                         checkIn={formData.checkIn}
                         checkOut={formData.checkOut}
                         onDateSelect={handleDateSelect}
+                        disabledDates={disabledDates}
                         selectingCheckIn={false}
                       />
                     </div>

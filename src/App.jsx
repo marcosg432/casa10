@@ -26,9 +26,9 @@ import Despesas from './pages/admin/Despesas'
 import Planilha from './pages/admin/Planilha'
 import DatabaseViewer from './pages/admin/DatabaseViewer'
 import BackupManager from './pages/admin/BackupManager'
-import Booking from './pages/Booking'
-import Airbnb from './pages/Airbnb'
 import QuartosDisponiveis from './pages/QuartosDisponiveis'
+import Hostel from './pages/Hostel'
+import CasaDeCima from './pages/CasaDeCima'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -62,9 +62,9 @@ function App() {
         <Route path="/admin/planilha" element={<ProtectedRoute><Planilha /></ProtectedRoute>} />
         <Route path="/admin/database" element={<ProtectedRoute><DatabaseViewer /></ProtectedRoute>} />
         <Route path="/admin/backup" element={<ProtectedRoute><BackupManager /></ProtectedRoute>} />
-        <Route path="/booking" element={<Booking />} />
-        <Route path="/airbnb" element={<Airbnb />} />
         <Route path="/quartos-disponiveis" element={<QuartosDisponiveis />} />
+        <Route path="/hostel" element={<Hostel />} />
+        <Route path="/casa-de-cima" element={<CasaDeCima />} />
       </Routes>
     </Router>
   )

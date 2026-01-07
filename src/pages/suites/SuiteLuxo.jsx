@@ -5,7 +5,7 @@ const SuiteLuxo = () => {
     id: 'luxo',
     nome: 'Quarto Deluxe',
     preco: 400,
-    descricao: 'O quarto duplo oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto duplo também conta com uma churrasqueira. O quarto duplo dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. A unidade possui 2 camas.'
+    descricao: 'Quarto do hostel (piso inferior) com 2 camas individuais. Cobertores azul-escuro. O quarto oferece uma área de estar e uma área para refeições, além de um banheiro compartilhado com chuveiro. Os hóspedes encontrarão um fogão, uma geladeira, utensílios de cozinha e um forno na cozinha totalmente equipada. O quarto também conta com uma churrasqueira. Dispõe de ar-condicionado, máquina de lavar roupa, entrada privativa, comodidades para preparar chá e café, além de TV de tela plana com serviços de streaming. Este é um quarto do hostel para aluguer individual, não é casa inteira.'
   }
 
   // Imagens exclusivas do Quarto Deluxe

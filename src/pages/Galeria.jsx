@@ -15,7 +15,7 @@ const Galeria = () => {
         <div className="galeria-hero-background"></div>
         <Header />
         <div className="galeria-hero-content">
-          <h1 className="galeria-hero-title">Casa10</h1>
+          <h1 className="galeria-hero-title">Casa10inn</h1>
         </div>
       </section>
 

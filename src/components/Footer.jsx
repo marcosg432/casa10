@@ -12,9 +12,7 @@ const Footer = () => {
             <img src="/icones/logo boa.png" alt="Casa10 Logo" />
           </div>
           <h2 className="home-footer-title">
-            Bem-vindo<br />
-            ao<br />
-            Casa10inn
+            Bem-vindo
           </h2>
         </div>
 

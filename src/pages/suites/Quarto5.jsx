@@ -3,9 +3,9 @@ import SuiteBase from './SuiteBase'
 const Quarto5 = () => {
   const suiteData = {
     id: 'quarto4',
-    nome: 'Quarto 4',
+    nome: 'Suite',
     preco: 450,
-    descricao: '4 camas de solteiro'
+    descricao: 'Suite da Casa de Cima (piso superior) com 3 camas no total, incluindo 1 cama de casal. Cobertores azul-claro. Capacidade: 4 pessoas. Esta suite faz parte da casa completa, que é alugada integralmente, não por quarto individual.'
   }
 
   // Imagens exclusivas do Quarto 4

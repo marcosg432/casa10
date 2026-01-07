@@ -7,20 +7,48 @@ migrateFromLocalStorage()
 
 // Função para verificar e atualizar reservas concluídas automaticamente
 const atualizarReservasConcluidas = async () => {
-  const agora = new Date()
-  const horaCheckout = 10 // 10:00
-  
-  const reservas = await db.reservas.toArray()
-  
-  for (const reserva of reservas) {
-    if (reserva.status === 'pendente' && reserva.checkOut) {
-      const checkOut = new Date(reserva.checkOut)
-      checkOut.setHours(horaCheckout, 0, 0, 0)
-      
-      if (agora >= checkOut) {
-        await db.reservas.update(reserva.id, { status: 'concluida' })
+  try {
+    const agora = new Date()
+    const horaCheckout = 10 // 10:00
+    
+    const reservas = await db.reservas.toArray()
+    console.log('🔄 Verificando reservas para atualizar status. Total:', reservas.length)
+    
+    for (const reserva of reservas) {
+      // Só atualiza se a reserva estiver pendente e tiver data de checkout
+      if (reserva.status === 'pendente' && reserva.checkOut) {
+        try {
+          // Converte a data de checkout para Date se for string
+          const checkOutDate = reserva.checkOut instanceof Date 
+            ? reserva.checkOut 
+            : new Date(reserva.checkOut)
+          
+          // Verifica se a data é válida
+          if (isNaN(checkOutDate.getTime())) {
+            console.warn('⚠️ Data de checkout inválida para reserva:', reserva.id, reserva.checkOut)
+            continue // Pula se a data for inválida
+          }
+          
+          // Define a hora de checkout (10:00) do dia de checkout
+          const checkOutComHora = new Date(checkOutDate)
+          checkOutComHora.setHours(horaCheckout, 0, 0, 0)
+          
+          // Só marca como concluída se já passou do checkout (data + hora)
+          if (agora >= checkOutComHora) {
+            console.log('✅ Marcando reserva como concluída:', reserva.id, reserva.codigo, 'Check-out:', checkOutComHora)
+            await db.reservas.update(reserva.id, { status: 'concluida' })
+          } else {
+            console.log('⏳ Reserva ainda pendente:', reserva.id, reserva.codigo, 'Check-out:', checkOutComHora, 'Agora:', agora)
+          }
+        } catch (error) {
+          // Log sempre para ajudar no diagnóstico
+          console.error('❌ Erro ao atualizar reserva:', reserva.id, error)
+        }
       }
     }
+  } catch (error) {
+    // Log sempre para ajudar no diagnóstico
+    console.error('❌ Erro ao atualizar reservas concluídas:', error)
   }
 }
 
@@ -43,6 +71,7 @@ export const saveReserva = async (reserva) => {
     telefone: reserva.telefone ? sanitizePhone(reserva.telefone) : '',
     quartoId: reserva.quartoId ? String(reserva.quartoId) : '',
     quartoNome: reserva.quartoNome ? sanitizeString(reserva.quartoNome) : '',
+    quartoImagem: reserva.quartoImagem || reserva.imagem || '', // Adiciona quartoImagem
     origem: reserva.origem ? sanitizeString(reserva.origem) : '',
     metodoPagamento: reserva.metodoPagamento ? sanitizeString(reserva.metodoPagamento) : '',
     // Valida e sanitiza valores numéricos
@@ -62,17 +91,124 @@ export const saveReserva = async (reserva) => {
   
   // Validações de segurança adicionais
   if (!novaReserva.nome || novaReserva.nome.length < 2) {
-    throw new Error('Nome inválido')
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro de validação - Nome inválido:', novaReserva.nome)
+    }
+    throw new Error('Nome inválido. O nome deve ter pelo menos 2 caracteres.')
   }
   if (!novaReserva.email || !validateEmail(novaReserva.email)) {
-    throw new Error('Email inválido')
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro de validação - Email inválido:', novaReserva.email)
+    }
+    throw new Error('Email inválido. Por favor, verifique o email informado.')
   }
   if (novaReserva.preco < 0 || novaReserva.total < 0) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Erro de validação - Valores inválidos:', { preco: novaReserva.preco, total: novaReserva.total })
+    }
     throw new Error('Valores inválidos')
   }
   
-  await db.reservas.add(novaReserva)
-  return novaReserva
+  try {
+    console.log('🔧 Iniciando salvamento da reserva...')
+    console.log('📝 Dados da reserva a ser salva:', novaReserva)
+    
+    // Garante que o banco está aberto
+    try {
+      if (!db.isOpen()) {
+        console.log('🔓 Banco não está aberto. Abrindo...')
+        await db.open()
+        console.log('✅ Banco aberto com sucesso')
+      } else {
+        console.log('✅ Banco já está aberto')
+      }
+    } catch (openError) {
+      console.error('❌ Erro ao abrir banco:', openError)
+      throw new Error(`Erro ao abrir banco de dados: ${openError.message}`)
+    }
+    
+    // Verifica se a reserva já existe (por ID)
+    let reservaExistente = null
+    try {
+      reservaExistente = await db.reservas.get(novaReserva.id)
+      console.log('🔍 Verificando se reserva já existe:', reservaExistente ? 'Sim' : 'Não')
+    } catch (getError) {
+      console.error('❌ Erro ao verificar reserva existente:', getError)
+      // Continua mesmo se houver erro na verificação
+    }
+    
+    if (reservaExistente) {
+      // Se já existe, atualiza
+      console.log('🔄 Atualizando reserva existente...')
+      try {
+        await db.reservas.update(novaReserva.id, novaReserva)
+        console.log('✅ Reserva atualizada:', novaReserva.id)
+      } catch (updateError) {
+        console.error('❌ Erro ao atualizar reserva:', updateError)
+        throw new Error(`Erro ao atualizar reserva: ${updateError.message}`)
+      }
+    } else {
+      // Se não existe, adiciona
+      console.log('➕ Adicionando nova reserva...')
+      try {
+        await db.reservas.add(novaReserva)
+        console.log('✅ Reserva adicionada com sucesso:', novaReserva.id)
+      } catch (addError) {
+        console.error('❌ Erro ao adicionar reserva:', addError)
+        console.error('Detalhes do erro:', {
+          name: addError.name,
+          message: addError.message,
+          stack: addError.stack
+        })
+        throw new Error(`Erro ao adicionar reserva: ${addError.message || 'Erro desconhecido'}`)
+      }
+    }
+    
+    // Verifica se foi realmente salva
+    console.log('🔍 Verificando se reserva foi salva...')
+    let reservaVerificada = null
+    try {
+      reservaVerificada = await db.reservas.get(novaReserva.id)
+      if (!reservaVerificada) {
+        console.error('❌ Reserva não encontrada após salvar!')
+        // Tenta listar todas as reservas para debug
+        const todasReservas = await db.reservas.toArray()
+        console.error('📊 Total de reservas no banco:', todasReservas.length)
+        throw new Error('Reserva não foi salva corretamente no banco de dados')
+      }
+      console.log('✅ Reserva confirmada no banco:', reservaVerificada.id)
+    } catch (verifyError) {
+      console.error('❌ Erro ao verificar reserva:', verifyError)
+      throw verifyError
+    }
+    
+    // Log para debug (sempre, para ajudar no diagnóstico)
+    console.log('✅✅✅ RESERVA SALVA COM SUCESSO:', {
+      id: reservaVerificada.id,
+      codigo: reservaVerificada.codigo,
+      nome: reservaVerificada.nome,
+      status: reservaVerificada.status,
+      checkIn: reservaVerificada.checkIn,
+      checkOut: reservaVerificada.checkOut,
+      quartoNome: reservaVerificada.quartoNome
+    })
+    
+    // Lista todas as reservas para confirmar
+    const todasReservas = await db.reservas.toArray()
+    console.log('📊 Total de reservas no banco agora:', todasReservas.length)
+    
+    return novaReserva
+  } catch (error) {
+    // Log sempre para ajudar no diagnóstico
+    console.error('❌❌❌ ERRO CRÍTICO AO SALVAR RESERVA:', error)
+    console.error('📝 Dados da reserva que tentou salvar:', novaReserva)
+    console.error('🔍 Tipo do erro:', error.name)
+    console.error('📄 Mensagem do erro:', error.message)
+    if (error.stack) {
+      console.error('📚 Stack trace:', error.stack)
+    }
+    throw new Error(`Erro ao salvar reserva: ${error.message || 'Erro desconhecido'}`)
+  }
 }
 
 export const updateReserva = async (id, updates) => {
