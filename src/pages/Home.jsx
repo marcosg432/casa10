@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 import { FaStar, FaHeart } from 'react-icons/fa'
 import Header from '../components/Header'
 import BookingEngine from '../components/BookingEngine'
-import { VerticalImageStack } from '../components/VerticalImageStack'
 import CircularImages from '../components/CircularImages'
 import Footer from '../components/Footer'
 import HeroCarousel from '../components/HeroCarousel'
 import './Home.css'
+
+// Lazy load VerticalImageStack (tem framer-motion - pesado)
+const VerticalImageStack = lazy(() => import('../components/VerticalImageStack').then(module => ({ default: module.VerticalImageStack })))
 
 const Home = () => {
   // Imagens selecionadas para o carrossel do banner
