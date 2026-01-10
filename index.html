@@ -3,24 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icones/logo boa.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     
     <!-- Meta tags de performance e SEO -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Casa10inn - Hospedagem exclusiva com conforto, sofisticação e bem-estar" />
     
+    <!-- Otimizações Mobile -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    
     <!-- Preconnect para recursos externos -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    
+    <!-- Resource Hints para melhorar performance mobile -->
+    <link rel="preload" as="script" href="/src/main.jsx" />
     
     <!-- Otimizações de renderização -->
     <meta name="theme-color" content="#ffffff" />
+    
+    <!-- Critical CSS inline (melhora First Paint) -->
+    <style>
+      /* Critical CSS para renderização inicial */
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+      #root{min-height:100vh}
+      /* Loading skeleton */
+      body:not(.loaded) #root{background:#f5f5f5}
+    </style>
     
     <title>Casa10inn - Hospedagem Exclusiva</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Marcar como carregado após hidratação
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          document.body.classList.add('loaded');
+        }, 100);
+      });
+    </script>
   </body>
 </html>
 

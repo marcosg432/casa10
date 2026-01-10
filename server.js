@@ -12,9 +12,10 @@ const app = express()
 const PORT = process.env.PORT || 3004
 const DIST_PATH = join(__dirname, 'dist')
 
-// Middleware de compressão (Gzip)
+// Middleware de compressão (Gzip) - Otimizado para mobile
 app.use(compression({
-  level: 6,
+  level: 9, // Máxima compressão
+  threshold: 1024, // Comprimir arquivos maiores que 1KB
   filter: (req, res) => {
     // Comprimir apenas arquivos textuais
     if (req.headers['x-no-compression']) {
@@ -24,15 +25,20 @@ app.use(compression({
   }
 }))
 
-// Cache headers para assets estáticos
+// Cache headers para assets estáticos - Otimizado para mobile
 app.use((req, res, next) => {
   // Cache de 1 ano para arquivos com hash (imutáveis)
   if (req.url.match(/\.(js|css|jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)$/)) {
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+    // Headers adicionais para mobile
+    res.setHeader('Vary', 'Accept-Encoding')
   } else {
     // Cache de 1 hora para HTML
-    res.setHeader('Cache-Control', 'public, max-age=3600')
+    res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate')
   }
+  // Headers de performance mobile
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
   next()
 })
 

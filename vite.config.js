@@ -16,13 +16,17 @@ export default defineConfig({
     strictPort: false
   },
   build: {
-    // Otimizações de build
+    // Otimizações de build para mobile
     target: 'es2015',
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true, // Remove console.log em produção
-        drop_debugger: true
+        drop_debugger: true,
+        passes: 2, // Mais compressão
+        unsafe: true,
+        unsafe_comps: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
       }
     },
     // Code splitting inteligente

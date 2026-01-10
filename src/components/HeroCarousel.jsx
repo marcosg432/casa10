@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { isMobile } from '../utils/mobileOptimization'
 import './HeroCarousel.css'
 
 const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
@@ -6,9 +7,10 @@ const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
 
-  // Navegação automática
+  // Navegação automática (desabilitar em mobile para melhorar performance)
   useEffect(() => {
     if (images.length <= 1) return
+    if (isMobile()) return // Não fazer autoplay em mobile
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length)
@@ -57,16 +59,19 @@ const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
   }
 
   // Pré-carrega apenas a imagem atual e próximas 2 (otimização de performance)
+  // Em mobile, carrega apenas a atual e próxima para economizar banda
   const getVisibleImages = () => {
     const visible = []
+    const maxDistance = isMobile() ? 1 : 2 // Menos imagens em mobile
+    
     for (let i = 0; i < images.length; i++) {
       const distance = Math.min(
         Math.abs(i - currentIndex),
         Math.abs(i - currentIndex + images.length),
         Math.abs(i - currentIndex - images.length)
       )
-      // Carrega apenas current, prev, next e próximas 2
-      if (distance <= 2) {
+      // Carrega apenas current, prev, next (e próximas 2 em desktop)
+      if (distance <= maxDistance) {
         visible.push(i)
       }
     }

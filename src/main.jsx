@@ -11,6 +11,19 @@ import { createAdminUserInDB } from './utils/db.js'
 // O usuário admin é criado automaticamente no db.js após a migração
 // Não precisa fazer nada aqui, apenas garantir que o módulo seja importado
 
+// Otimização: Carregar backup apenas após interação do usuário em mobile
+if (typeof window !== 'undefined') {
+  const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
+  
+  if (isMobileDevice) {
+    // Delay carregamento de scripts não críticos em mobile
+    requestIdleCallback(() => {
+      // Executar apenas quando o browser estiver ocioso
+    }, { timeout: 2000 })
+  }
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

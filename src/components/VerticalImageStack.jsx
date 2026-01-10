@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import { isMobile, getMotionConfig } from "../utils/mobileOptimization"
 import "./VerticalImageStack.css"
 
 const images = [
@@ -112,7 +113,10 @@ export function VerticalImageStack() {
                 rotateX: style.rotateX,
                 zIndex: style.zIndex,
               }}
-              transition={{
+              transition={isMobile() ? {
+                duration: 0.2,
+                ease: "easeOut"
+              } : {
                 type: "spring",
                 stiffness: 300,
                 damping: 30,
