@@ -10,7 +10,10 @@ export default defineConfig({
   },
   preview: {
     host: true,
-    port: 3004
+    port: 3004,
+    // Otimizações do preview server
+    cors: true,
+    strictPort: false
   },
   build: {
     // Otimizações de build

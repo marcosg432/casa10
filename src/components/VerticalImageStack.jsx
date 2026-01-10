@@ -139,6 +139,8 @@ export function VerticalImageStack() {
                   className="vertical-image-img"
                   draggable={false}
                   loading={isCurrent ? "eager" : "lazy"}
+                  decoding="async"
+                  fetchPriority={isCurrent ? "high" : "low"}
                 />
 
                 {/* Bottom gradient overlay */}
