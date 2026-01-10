@@ -56,6 +56,34 @@ const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
     return null
   }
 
+  // Pré-carrega apenas a imagem atual e próximas 2 (otimização de performance)
+  const getVisibleImages = () => {
+    const visible = []
+    for (let i = 0; i < images.length; i++) {
+      const distance = Math.min(
+        Math.abs(i - currentIndex),
+        Math.abs(i - currentIndex + images.length),
+        Math.abs(i - currentIndex - images.length)
+      )
+      // Carrega apenas current, prev, next e próximas 2
+      if (distance <= 2) {
+        visible.push(i)
+      }
+    }
+    return visible
+  }
+
+  const visibleIndices = getVisibleImages()
+
+  // Pré-carrega a próxima imagem
+  useEffect(() => {
+    if (images.length > 1) {
+      const nextIndex = (currentIndex + 1) % images.length
+      const img = new Image()
+      img.src = images[nextIndex]
+    }
+  }, [currentIndex, images])
+
   return (
     <div 
       className="hero-carousel"
@@ -64,19 +92,25 @@ const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
       onTouchEnd={handleTouchEnd}
     >
       <div className="hero-carousel-container">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className={`hero-carousel-slide ${
-              index === currentIndex ? 'active' : ''
-            } ${index < currentIndex ? 'prev' : 'next'}`}
-            style={{
-              backgroundImage: `url(${image})`,
-            }}
-            role="img"
-            aria-label={`Slide ${index + 1} do carrossel`}
-          />
-        ))}
+        {images.map((image, index) => {
+          const isVisible = visibleIndices.includes(index)
+          const isActive = index === currentIndex
+          
+          return (
+            <div
+              key={index}
+              className={`hero-carousel-slide ${
+                isActive ? 'active' : ''
+              } ${index < currentIndex ? 'prev' : 'next'}`}
+              style={{
+                backgroundImage: isVisible ? `url(${image})` : 'none',
+                display: isVisible ? 'block' : 'none'
+              }}
+              role="img"
+              aria-label={`Slide ${index + 1} do carrossel`}
+            />
+          )
+        })}
       </div>
 
       {/* Setas de navegação */}

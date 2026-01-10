@@ -47,6 +47,8 @@ const Home = () => {
               alt="Casa10" 
               className="hero-logo"
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </div>
           
@@ -58,6 +60,8 @@ const Home = () => {
                   src="/imagem/casa-2.jpg" 
                   alt="Casa de Cima" 
                   className="hero-category-image"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <h3>Casa de Cima</h3>
@@ -69,6 +73,8 @@ const Home = () => {
                   src="/imagem/quarto-deluxe.jpg" 
                   alt="Hostel" 
                   className="hero-category-image"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <h3>Hostel</h3>
@@ -104,6 +110,8 @@ const Home = () => {
               src="/imagem/foto modelo.jpg"
               alt="Casa10"
               className="sobre-image-foto"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>

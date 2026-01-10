@@ -139,6 +139,7 @@ function AnimatedImage({ alt, src, ratio, mapsLink, nome }) {
         src={src}
         className="image-gallery-image"
         loading="lazy"
+        decoding="async"
       />
       {/* Nome do ponto turístico - sempre visível */}
       <div className="image-gallery-name-overlay">
