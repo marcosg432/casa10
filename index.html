@@ -18,9 +18,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     
-    <!-- Resource Hints para melhorar performance mobile -->
-    <link rel="preload" as="script" href="/src/main.jsx" />
-    
     <!-- Otimizações de renderização -->
     <meta name="theme-color" content="#ffffff" />
     
@@ -45,6 +42,15 @@
         setTimeout(function() {
           document.body.classList.add('loaded');
         }, 100);
+      });
+      
+      // Capturar erros globais não tratados (importante para mobile)
+      window.addEventListener('error', function(e) {
+        console.error('Erro global capturado:', e.error);
+      });
+      
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Promise rejeitada não tratada:', e.reason);
       });
     </script>
   </body>

@@ -13,16 +13,8 @@ import { createAdminUserInDB } from './utils/db.js'
 
 // Otimização: Carregar backup apenas após interação do usuário em mobile
 if (typeof window !== 'undefined') {
-  const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-  
-  if (isMobileDevice) {
-    // Delay carregamento de scripts não críticos em mobile
-    requestIdleCallback(() => {
-      // Executar apenas quando o browser estiver ocioso
-    }, { timeout: 2000 })
-  }
+  // Remover requestIdleCallback que pode não funcionar em todos os browsers
+  // e causar problemas no mobile
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
