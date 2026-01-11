@@ -601,8 +601,9 @@
 @media (max-width: 768px) {
   /* Hero Section */
   .hero {
-    min-height: 100vh;
-    height: 100vh;
+    height: 70vh;
+    min-height: 500px;
+    max-height: 600px;
   }
 
   .hero-content {
@@ -770,6 +771,12 @@
 
 @media (max-width: 480px) {
   /* Hero Section */
+  .hero {
+    height: 65vh;
+    min-height: 450px;
+    max-height: 550px;
+  }
+
   .hero-logo-container {
     margin-bottom: 30px;
   }

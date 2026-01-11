@@ -99,8 +99,8 @@
 /* Responsividade */
 @media (max-width: 768px) {
   .hero-carousel-slide {
-    background-size: contain; /* Mostrar imagem completa no mobile */
-    background-color: #000; /* Fundo preto para preencher espaços */
+    background-size: cover; /* Ocupar todo o espaço */
+    background-position: center center; /* Centralizar imagem */
   }
 
   .hero-carousel-arrow {
@@ -120,8 +120,8 @@
 
 @media (max-width: 480px) {
   .hero-carousel-slide {
-    background-size: contain; /* Mostrar imagem completa no mobile */
-    background-color: #000; /* Fundo preto para preencher espaços */
+    background-size: cover; /* Ocupar todo o espaço */
+    background-position: center center; /* Centralizar imagem */
   }
 
   .hero-carousel-arrow {
