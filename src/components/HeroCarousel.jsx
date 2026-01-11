@@ -7,14 +7,16 @@ const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
   const [touchStart, setTouchStart] = useState(null)
   const [touchEnd, setTouchEnd] = useState(null)
 
-  // Navegação automática (desabilitar em mobile para melhorar performance)
+  // Navegação automática (habilitado também no mobile com velocidade maior)
   useEffect(() => {
     if (images.length <= 1) return
-    if (isMobile()) return // Não fazer autoplay em mobile
+    
+    // Intervalo mais rápido no mobile
+    const intervalTime = isMobile() ? Math.max(2000, autoplayInterval * 0.8) : autoplayInterval
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length)
-    }, autoplayInterval)
+    }, intervalTime)
 
     return () => clearInterval(interval)
   }, [images.length, autoplayInterval])
@@ -102,18 +104,18 @@ const HeroCarousel = ({ images, autoplayInterval = 5000 }) => {
           const isActive = index === currentIndex
           
           return (
-            <div
-              key={index}
-              className={`hero-carousel-slide ${
+          <div
+            key={index}
+            className={`hero-carousel-slide ${
                 isActive ? 'active' : ''
-              } ${index < currentIndex ? 'prev' : 'next'}`}
-              style={{
+            } ${index < currentIndex ? 'prev' : 'next'}`}
+            style={{
                 backgroundImage: isVisible ? `url(${image})` : 'none',
                 display: isVisible ? 'block' : 'none'
-              }}
-              role="img"
-              aria-label={`Slide ${index + 1} do carrossel`}
-            />
+            }}
+            role="img"
+            aria-label={`Slide ${index + 1} do carrossel`}
+          />
           )
         })}
       </div>
