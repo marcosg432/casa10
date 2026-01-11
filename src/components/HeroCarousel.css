@@ -98,6 +98,11 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
+  .hero-carousel-slide {
+    background-size: contain; /* Mostrar imagem completa no mobile */
+    background-color: #000; /* Fundo preto para preencher espaços */
+  }
+
   .hero-carousel-arrow {
     width: 45px;
     height: 45px;
@@ -114,6 +119,11 @@
 }
 
 @media (max-width: 480px) {
+  .hero-carousel-slide {
+    background-size: contain; /* Mostrar imagem completa no mobile */
+    background-color: #000; /* Fundo preto para preencher espaços */
+  }
+
   .hero-carousel-arrow {
     width: 40px;
     height: 40px;
