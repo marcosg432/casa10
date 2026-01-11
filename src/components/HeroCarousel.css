@@ -103,18 +103,9 @@
     background-position: center center; /* Centralizar imagem */
   }
 
+  /* Ocultar botões de navegação no mobile */
   .hero-carousel-arrow {
-    width: 45px;
-    height: 45px;
-    font-size: 36px;
-  }
-
-  .hero-carousel-arrow-left {
-    left: 15px;
-  }
-
-  .hero-carousel-arrow-right {
-    right: 15px;
+    display: none !important;
   }
 }
 
@@ -124,18 +115,9 @@
     background-position: center center; /* Centralizar imagem */
   }
 
+  /* Ocultar botões de navegação no mobile */
   .hero-carousel-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 32px;
-  }
-
-  .hero-carousel-arrow-left {
-    left: 10px;
-  }
-
-  .hero-carousel-arrow-right {
-    right: 10px;
+    display: none !important;
   }
 }
 

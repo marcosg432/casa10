@@ -39,7 +39,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-background">
-          <HeroCarousel images={heroCarouselImages} autoplayInterval={3000} />
+          <HeroCarousel images={heroCarouselImages} autoplayInterval={2500} />
         </div>
         <Header />
         <div className="hero-content">
